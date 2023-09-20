@@ -32,18 +32,25 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Texture blueTankTexture;
     private TextureRegion playerGraphics;
     private Rectangle playerRectangle;
-    // player current position coordinates on level 10x8 grid (e.g. x=0, y=1)
 
     private Texture greenTreeTexture;
     private TextureRegion treeObstacleGraphics;
-    private GridPoint2 treeObstacleCoordinates = new GridPoint2();
     private Rectangle treeObstacleRectangle = new Rectangle();
     
     private Tank tank;
     private InputController inputController;
 
+    private Tank tank;
+    private Obstacle tree;
+    private InputController inputController;
+
     @Override
     public void create() {
+        tank = new Tank(new GridPoint2(1, 1), new GridPoint2(1, 1), Direction.RIGHT, 1f, 0.4f);
+        tree = new Obstacle(new GridPoint2(1, 3));
+        inputController = new InputController();
+        initInputController();
+
         batch = new SpriteBatch();
 
         // load level tiles
@@ -61,15 +68,11 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         greenTreeTexture = new Texture("images/greenTree.png");
         treeObstacleGraphics = new TextureRegion(greenTreeTexture);
-        treeObstacleCoordinates = new GridPoint2(1, 3);
         treeObstacleRectangle = createBoundingRectangle(treeObstacleGraphics);
-        tank = new Tank(new GridPoint2(1,1), Direction.RIGHT);
-        moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, treeObstacleCoordinates);
-        initKeyMappings();
+        moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, tree.getCoordinates());
     }
 
-    private void initKeyMappings() {
-        inputController = new InputController();
+    private void initInputController() {
         inputController.addMapping(UP, Direction.UP);
         inputController.addMapping(W, Direction.UP);
         inputController.addMapping(LEFT, Direction.LEFT);
@@ -87,23 +90,22 @@ public class GameDesktopLauncher implements ApplicationListener {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         Direction direction = inputController.getDirection();
-        updateGameState(deltaTime, direction);
-        renderGame();
+
+        if (direction != null & !tank.isMoving()) {
+            if (!tank.goingToCollide(direction, tree.getCoordinates())) {
+                tank.startMovement(direction);
+            }
+            tank.changeDirection(direction);
+        }
+
+        tank.move(deltaTime);
+
+        drawGraphics();
     }
 
-    private void updateGameState(float deltaTime, Direction direction) {
-        if (direction != null & !tank.isMoving()) {
-            GridPoint2 tankTargetCoordinates = direction.apply(tank.getCoordinates());
-            if (!collides(treeObstacleCoordinates, tankTargetCoordinates)) {
-                tank.moveTo(tankTargetCoordinates);
-            }
-            tank.rotate(direction);
-        }
+    private void drawGraphics() {
         // calculate interpolated player screen coordinates
         tileMovement.moveRectangleBetweenTileCenters(playerRectangle, tank.getCoordinates(), tank.getDestinationCoordinates(), tank.getMovementProgress());
-
-        tank.updateState(deltaTime);
-    }
 
     private void renderGame() {
         // render each tile of the level
@@ -113,17 +115,13 @@ public class GameDesktopLauncher implements ApplicationListener {
         batch.begin();
 
         // render player
-        drawTextureRegionUnscaled(batch, playerGraphics, playerRectangle, tank.getDirection().getRotation());
+        drawTextureRegionUnscaled(batch, playerGraphics, playerRectangle, tank.getRotation());
 
         // render tree obstacle
         drawTextureRegionUnscaled(batch, treeObstacleGraphics, treeObstacleRectangle, 0f);
 
         // submit all drawing requests
         batch.end();
-    }
-
-    private boolean collides(GridPoint2 object1, GridPoint2 object2) {
-        return object1.equals(object2);
     }
 
     private static void clearScreen() {
