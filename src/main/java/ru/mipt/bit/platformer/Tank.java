@@ -12,11 +12,11 @@ public class Tank {
     private float movementProgress;
     private final float movementSpeed;
 
-    public Tank(GridPoint2 coordinates, GridPoint2 destinationCoordinates, Direction direction, float movementProgress, float movementSpeed) {
+    public Tank(GridPoint2 coordinates, Direction direction, float movementSpeed) {
         this.coordinates = coordinates;
-        this.destinationCoordinates = destinationCoordinates;
+        this.destinationCoordinates = coordinates;
         this.direction = direction;
-        this.movementProgress = movementProgress;
+        this.movementProgress = 1f;
         this.movementSpeed = movementSpeed;
     }
 
@@ -45,7 +45,7 @@ public class Tank {
         return movementProgress;
     }
 
-    public void move(float deltaTime) {
+    public void updateState(float deltaTime) {
         movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
         if (isEqual(movementProgress, 1f)) {
             // record that the player has reached his/her destination

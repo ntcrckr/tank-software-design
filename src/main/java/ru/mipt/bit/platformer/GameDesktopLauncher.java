@@ -43,7 +43,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void create() {
-        tank = new Tank(new GridPoint2(1, 1), new GridPoint2(1, 1), Direction.RIGHT, 1f, 0.4f);
+        tank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
         tree = new Obstacle(new GridPoint2(1, 3));
         inputController = new InputController();
         initInputController();
@@ -95,7 +95,7 @@ public class GameDesktopLauncher implements ApplicationListener {
             tank.changeDirection(direction);
         }
 
-        tank.move(deltaTime);
+        tank.updateState(deltaTime);
 
         drawGraphics();
 
