@@ -7,7 +7,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -19,6 +18,7 @@ import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.badlogic.gdx.Input.Keys.*;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
@@ -31,25 +31,17 @@ public class GameDesktopLauncher implements ApplicationListener {
     private TiledMap level;
     private MapRenderer levelRenderer;
     private TileMovement tileMovement;
-
-    private Texture blueTankTexture;
-    private TextureRegion playerGraphics;
-    private Rectangle playerRectangle;
-
-    private Texture greenTreeTexture;
-    private TextureRegion treeObstacleGraphics;
-    private Rectangle treeObstacleRectangle = new Rectangle();
+    private GameObjectGraphics playerTankGraphics;
+    private final List<GameObjectGraphics> obstacleGraphics = new ArrayList<>();
+    private final List<GameObjectGraphics> enemyTankGraphics = new ArrayList<>();
 
     private Tank playerTank;
     private final List<Tank> enemyTanks = new ArrayList<>();
-//    private Obstacle tree;
-    private List<Obstacle> obstacles = new ArrayList<>();
+    private final List<Obstacle> obstacles = new ArrayList<>();
     private InputController inputController;
 
     @Override
     public void create() {
-//        tank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
-//        tree = new Obstacle(new GridPoint2(1, 3));
         playerTank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
         obstacles.add(new Obstacle(new GridPoint2(1, 3)));
         inputController = new InputController();
@@ -63,16 +55,12 @@ public class GameDesktopLauncher implements ApplicationListener {
         TiledMapTileLayer groundLayer = getSingleLayer(level);
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
 
-        // Texture decodes an image file and loads it into GPU memory, it represents a native resource
-        blueTankTexture = new Texture("images/tank_blue.png");
-        // TextureRegion represents Texture portion, there may be many TextureRegion instances of the same Texture
-        playerGraphics = new TextureRegion(blueTankTexture);
-        playerRectangle = createBoundingRectangle(playerGraphics);
+        playerTankGraphics = new GameObjectGraphics(new Texture("images/tank_blue.png"));
 
-        greenTreeTexture = new Texture("images/greenTree.png");
-        treeObstacleGraphics = new TextureRegion(greenTreeTexture);
-        treeObstacleRectangle = createBoundingRectangle(treeObstacleGraphics);
-        moveRectangleAtTileCenter(groundLayer, treeObstacleRectangle, tree.getCoordinates());
+        obstacleGraphics.add(new GameObjectGraphics(new Texture("images/greenTree.png")));
+        for (int i = 0; i < obstacles.size(); i++) {
+            moveRectangleAtTileCenter(groundLayer, obstacleGraphics.get(i).getRectangle(), obstacles.get(i).getCoordinates());
+        }
     }
 
     private void initInputController() {
@@ -95,24 +83,54 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Direction direction = inputController.getDirection();
 
-        if (direction != null & !playerTank.isMoving()) {
-            playerTank.checkCollision(obstacles);
-            if (!tank.goingToCollide(direction, tree.getCoordinates())) {
-                tank.startMovement(direction);
+        if (direction != null) {
+            tryToMove(playerTank, direction);
+        }
+        playerTank.updateState(deltaTime);
+
+        for (Tank enemyTank :
+                enemyTanks) {
+            Direction enemyDirection = determineEnemyDirection(enemyTank);
+            if (enemyDirection != null) {
+                tryToMove(enemyTank, enemyDirection);
             }
-            tank.changeDirection(direction);
+            enemyTank.updateState(deltaTime);
         }
 
-        tank.updateState(deltaTime);
-
-        drawGraphics();
+        drawTankGraphics();
 
         renderGame();
     }
 
-    private void drawGraphics() {
+    private Direction determineEnemyDirection(Tank enemyTank) {
+        // random for now, in future will determine enemy's direction according to some algorithm, maybe should be inside EnemyTank class
+        return Direction.UP;
+    }
+
+    private void tryToMove(Tank tank, Direction direction) {
+        if (!tank.isMoving()) {
+            List<Collidable> obstacleCollidables = obstacles.stream().map(Obstacle::getCollidable).collect(Collectors.toList());
+            if (!tank.checkCollision(direction, obstacleCollidables)) {
+                tank.startMovement(direction);
+            }
+            tank.changeDirection(direction);
+        }
+    }
+
+    private void drawTankGraphics() {
         // calculate interpolated player screen coordinates
-        tileMovement.moveRectangleBetweenTileCenters(playerRectangle, tank.getCoordinates(), tank.getDestinationCoordinates(), tank.getMovementProgress());
+        tileMovement.moveRectangleBetweenTileCenters(playerTankGraphics.getRectangle(), playerTank.getCoordinates(), playerTank.getDestinationCoordinates(), playerTank.getMovementProgress());
+
+        for (Tank enemyTank :
+                enemyTanks) {
+            Rectangle enemyRectangle = getEnemyRectangle();
+            tileMovement.moveRectangleBetweenTileCenters(enemyRectangle, enemyTank.getCoordinates(), enemyTank.getDestinationCoordinates(), enemyTank.getMovementProgress());
+        }
+    }
+
+    private Rectangle getEnemyRectangle() {
+        // temp Rectangle because enemies are not yet implemented
+        return new Rectangle();
     }
 
     private void renderGame() {
@@ -123,10 +141,15 @@ public class GameDesktopLauncher implements ApplicationListener {
         batch.begin();
 
         // render player
-        drawTextureRegionUnscaled(batch, playerGraphics, playerRectangle, tank.getRotation());
+        drawTextureRegionUnscaled(batch, playerTankGraphics.getTextureRegion(), playerTankGraphics.getRectangle(), playerTank.getRotation());
 
-        // render tree obstacle
-        drawTextureRegionUnscaled(batch, treeObstacleGraphics, treeObstacleRectangle, 0f);
+        // also render enemy tanks graphics, but there are none for now
+
+        // render tree obstacles
+        for (GameObjectGraphics obstacleGraphic:
+                obstacleGraphics) {
+            drawTextureRegionUnscaled(batch, obstacleGraphic.getTextureRegion(), obstacleGraphic.getRectangle(), 0f);
+        }
 
         // submit all drawing requests
         batch.end();
@@ -155,8 +178,12 @@ public class GameDesktopLauncher implements ApplicationListener {
     @Override
     public void dispose() {
         // dispose of all the native resources (classes which implement com.badlogic.gdx.utils.Disposable)
-        greenTreeTexture.dispose();
-        blueTankTexture.dispose();
+        for (GameObjectGraphics obstacleGraphic :
+                obstacleGraphics) {
+            obstacleGraphic.getTexture().dispose();
+        }
+        // same for enemies, but there are none now
+        playerTankGraphics.getTexture().dispose();
         level.dispose();
         batch.dispose();
     }

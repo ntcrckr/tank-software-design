@@ -9,14 +9,12 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class Tank {
     private final Collidable collidable;
-//    private GridPoint2 coordinates;
     private GridPoint2 destinationCoordinates;
     private Direction direction;
     private float movementProgress;
     private final float movementSpeed;
 
     public Tank(GridPoint2 coordinates, Direction direction, float movementSpeed) {
-//        this.coordinates = coordinates;
         this.collidable = new Collidable(coordinates);
         this.destinationCoordinates = coordinates;
         this.direction = direction;
@@ -32,10 +30,7 @@ public class Tank {
         return collidable.getCoordinates();
     }
 
-//    public boolean goingToCollide(Direction direction, GridPoint2 otherCoordinates) {
-//        return direction.apply(collidable.getCoordinates()).equals(otherCoordinates);
-//    }
-    public boolean checkCollision(List<Collidable> others) {
+    public boolean checkCollision(Direction direction, List<Collidable> others) {
         for (Collidable other:
              others) {
             if (collidable.goingToCollide(direction, other)) {
