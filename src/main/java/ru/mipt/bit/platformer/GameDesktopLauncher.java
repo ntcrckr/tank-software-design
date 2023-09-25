@@ -17,6 +17,9 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import ru.mipt.bit.platformer.util.TileMovement;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.badlogic.gdx.Input.Keys.*;
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
@@ -37,14 +40,18 @@ public class GameDesktopLauncher implements ApplicationListener {
     private TextureRegion treeObstacleGraphics;
     private Rectangle treeObstacleRectangle = new Rectangle();
 
-    private Tank tank;
-    private Obstacle tree;
+    private Tank playerTank;
+    private final List<Tank> enemyTanks = new ArrayList<>();
+//    private Obstacle tree;
+    private List<Obstacle> obstacles = new ArrayList<>();
     private InputController inputController;
 
     @Override
     public void create() {
-        tank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
-        tree = new Obstacle(new GridPoint2(1, 3));
+//        tank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
+//        tree = new Obstacle(new GridPoint2(1, 3));
+        playerTank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
+        obstacles.add(new Obstacle(new GridPoint2(1, 3)));
         inputController = new InputController();
         initInputController();
 
@@ -88,7 +95,8 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         Direction direction = inputController.getDirection();
 
-        if (direction != null & !tank.isMoving()) {
+        if (direction != null & !playerTank.isMoving()) {
+            playerTank.checkCollision(obstacles);
             if (!tank.goingToCollide(direction, tree.getCoordinates())) {
                 tank.startMovement(direction);
             }
