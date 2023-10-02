@@ -32,6 +32,7 @@ public class Tank implements Drawable, Controllable {
     public void startMovement(Direction direction) {
         destinationCoordinates = direction.apply(coordinates);
         movementProgress = 0f;
+        changeDirection(direction);
     }
 
     public Coordinates getDestinationCoordinates() {
@@ -65,19 +66,15 @@ public class Tank implements Drawable, Controllable {
         switch (action) {
             case MOVE_RIGHT:
                 startMovement(Direction.RIGHT);
-                changeDirection(Direction.RIGHT);
                 break;
             case MOVE_UP:
                 startMovement(Direction.UP);
-                changeDirection(Direction.UP);
                 break;
             case MOVE_LEFT:
                 startMovement(Direction.LEFT);
-                changeDirection(Direction.LEFT);
                 break;
             case MOVE_DOWN:
                 startMovement(Direction.DOWN);
-                changeDirection(Direction.DOWN);
                 break;
             default:
                 break;
