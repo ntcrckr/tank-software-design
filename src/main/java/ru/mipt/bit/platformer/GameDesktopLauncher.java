@@ -14,6 +14,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.GridPoint2;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.view.GameGraphics;
+import ru.mipt.bit.platformer.model.*;
+import ru.mipt.bit.platformer.view.GameObjectGraphics;
+import ru.mipt.bit.platformer.controller.InputController;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.ArrayList;
@@ -39,11 +43,18 @@ public class GameDesktopLauncher implements ApplicationListener {
     private final List<Tank> enemyTanks = new ArrayList<>();
     private final List<Obstacle> obstacles = new ArrayList<>();
     private InputController inputController;
+    private final GameLevel gameLevel = new GameLevel();
+    private final GameGraphics gameGraphics = new GameGraphics();
 
     @Override
     public void create() {
-        playerTank = new Tank(new GridPoint2(1, 1), Direction.RIGHT, 0.4f);
-        obstacles.add(new Obstacle(new GridPoint2(1, 3)));
+        Tank playerTank = new Tank(new Coordinates(1, 1), Direction.RIGHT, 0.4f);
+        gameLevel.add(playerTank);
+        gameGraphics.add(playerTank, "images/tank_blue.png");
+        Obstacle tree = new Obstacle(new Coordinates(1, 3));
+        gameLevel.add(tree);
+        gameGraphics.add(tree, "images/greenTree.png");
+
         inputController = new InputController();
         initInputController();
 
@@ -55,9 +66,6 @@ public class GameDesktopLauncher implements ApplicationListener {
         TiledMapTileLayer groundLayer = getSingleLayer(level);
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
 
-        playerTankGraphics = new GameObjectGraphics(new Texture("images/tank_blue.png"));
-
-        obstacleGraphics.add(new GameObjectGraphics(new Texture("images/greenTree.png")));
         for (int i = 0; i < obstacles.size(); i++) {
             moveRectangleAtTileCenter(groundLayer, obstacleGraphics.get(i).getRectangle(), obstacles.get(i).getCoordinates());
         }

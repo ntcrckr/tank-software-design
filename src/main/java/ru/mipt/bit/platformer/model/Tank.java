@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer;
+package ru.mipt.bit.platformer.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -7,18 +7,18 @@ import java.util.List;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class Tank {
-    private final Collidable collidable;
-    private GridPoint2 destinationCoordinates;
-    private Direction direction;
+public class Tank implements Drawable {
+    private Coordinates coordinates;
+    private Coordinates destinationCoordinates;
     private float movementProgress;
+    private Direction direction;
     private final float movementSpeed;
 
-    public Tank(GridPoint2 coordinates, Direction direction, float movementSpeed) {
-        this.collidable = new Collidable(coordinates);
+    public Tank(Coordinates coordinates, Direction direction, float movementSpeed) {
+        this.coordinates = coordinates;
         this.destinationCoordinates = coordinates;
-        this.direction = direction;
         this.movementProgress = 1f;
+        this.direction = direction;
         this.movementSpeed = movementSpeed;
     }
 
@@ -26,26 +26,27 @@ public class Tank {
         return !isEqual(movementProgress, 1f);
     }
 
-    public GridPoint2 getCoordinates() {
-        return collidable.getCoordinates();
+
+    public Coordinates getCoordinates() {
+        return coordinates;
     }
 
-    public boolean checkCollision(Direction direction, List<Collidable> others) {
-        for (Collidable other:
-             others) {
-            if (collidable.goingToCollide(direction, other)) {
-                return true;
-            }
-        }
-        return false;
-    }
+//    public boolean checkCollision(Direction direction, List<Collidable> others) {
+//        for (Collidable other:
+//             others) {
+//            if (collidable.goingToCollide(direction, other)) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
 
     public void startMovement(Direction direction) {
-        destinationCoordinates = direction.apply(collidable.getCoordinates());
+        destinationCoordinates = direction.apply(coordinates);
         movementProgress = 0f;
     }
 
-    public GridPoint2 getDestinationCoordinates() {
+    public Coordinates getDestinationCoordinates() {
         return destinationCoordinates;
     }
 
@@ -57,7 +58,7 @@ public class Tank {
         movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
         if (isEqual(movementProgress, 1f)) {
             // record that the player has reached his/her destination
-            collidable.setCoordinates(destinationCoordinates.cpy());
+            coordinates = destinationCoordinates;
         }
     }
 
