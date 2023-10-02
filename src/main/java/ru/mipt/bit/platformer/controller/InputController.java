@@ -1,25 +1,42 @@
 package ru.mipt.bit.platformer.controller;
 
 import com.badlogic.gdx.Gdx;
-import ru.mipt.bit.platformer.model.Direction;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class InputController {
-    private final Map<Integer, Direction> keyToDirectionMap = new HashMap<>();
+import static com.badlogic.gdx.Input.Keys.*;
+import static com.badlogic.gdx.Input.Keys.D;
 
-    public InputController() {}
+public class InputController implements Controller {
+    private final Map<Integer, Action> keyToActionMap = new HashMap<>();
 
-    public void addMapping(Integer key, Direction direction) {
-        keyToDirectionMap.put(key, direction);
+    public InputController(InputType inputType) {
+        if (inputType.equals(InputType.KEYBOARD)) {
+            initKeyboard();
+        }
     }
 
-    public Direction getDirection() {
+    public void addMapping(Integer key, Action action) {
+        keyToActionMap.put(key, action);
+    }
+
+    private void initKeyboard() {
+        addMapping(UP, Action.MOVE_UP);
+        addMapping(W, Action.MOVE_UP);
+        addMapping(LEFT, Action.MOVE_LEFT);
+        addMapping(A, Action.MOVE_LEFT);
+        addMapping(DOWN, Action.MOVE_DOWN);
+        addMapping(S, Action.MOVE_DOWN);
+        addMapping(RIGHT, Action.MOVE_RIGHT);
+        addMapping(D, Action.MOVE_RIGHT);
+    }
+
+    public Action getAction() {
         for (Integer key :
-                keyToDirectionMap.keySet()) {
+                keyToActionMap.keySet()) {
             if (Gdx.input.isKeyPressed(key)) {
-                return keyToDirectionMap.get(key);
+                return keyToActionMap.get(key);
             }
         }
         return null;

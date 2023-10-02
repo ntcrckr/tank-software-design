@@ -1,7 +1,5 @@
 package ru.mipt.bit.platformer.model;
 
-import com.badlogic.gdx.math.GridPoint2;
-
 public class Obstacle implements Drawable {
     private final Coordinates coordinates;
     private final Direction direction;
@@ -11,16 +9,21 @@ public class Obstacle implements Drawable {
         this.direction = Direction.RIGHT;
     }
 
-    public Obstacle(Coordinates coordinates, Direction direction) {
-        this.coordinates = coordinates;
-        this.direction = direction;
+    public Coordinates getCoordinates() {
+        return coordinates;
     }
 
-    public Coordinates getCoordinates() {
+    @Override
+    public Coordinates getDestinationCoordinates() {
         return coordinates;
     }
 
     public float getRotation() {
         return direction.getRotation();
+    }
+
+    @Override
+    public float getMovementProgress() {
+        return 1f;
     }
 }

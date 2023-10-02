@@ -1,13 +1,11 @@
 package ru.mipt.bit.platformer.model;
 
-import com.badlogic.gdx.math.GridPoint2;
-
-import java.util.List;
+import ru.mipt.bit.platformer.controller.Action;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class Tank implements Drawable {
+public class Tank implements Drawable, Controllable {
     private Coordinates coordinates;
     private Coordinates destinationCoordinates;
     private float movementProgress;
@@ -31,16 +29,6 @@ public class Tank implements Drawable {
         return coordinates;
     }
 
-//    public boolean checkCollision(Direction direction, List<Collidable> others) {
-//        for (Collidable other:
-//             others) {
-//            if (collidable.goingToCollide(direction, other)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     public void startMovement(Direction direction) {
         destinationCoordinates = direction.apply(coordinates);
         movementProgress = 0f;
@@ -57,7 +45,6 @@ public class Tank implements Drawable {
     public void updateState(float deltaTime) {
         movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
         if (isEqual(movementProgress, 1f)) {
-            // record that the player has reached his/her destination
             coordinates = destinationCoordinates;
         }
     }
@@ -68,5 +55,55 @@ public class Tank implements Drawable {
 
     public void changeDirection(Direction newDirection) {
         direction = newDirection;
+    }
+
+    @Override
+    public void apply(Action action) {
+        if (action == null) {
+            return;
+        }
+        switch (action) {
+            case MOVE_RIGHT:
+                startMovement(Direction.RIGHT);
+                changeDirection(Direction.RIGHT);
+                break;
+            case MOVE_UP:
+                startMovement(Direction.UP);
+                changeDirection(Direction.UP);
+                break;
+            case MOVE_LEFT:
+                startMovement(Direction.LEFT);
+                changeDirection(Direction.LEFT);
+                break;
+            case MOVE_DOWN:
+                startMovement(Direction.DOWN);
+                changeDirection(Direction.DOWN);
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public Coordinates tryToApply(Action action) {
+        if (action == null) {
+            return null;
+        }
+        if (isMoving()) {
+            return null;
+        }
+        switch (action) {
+            case MOVE_RIGHT:
+                return Direction.RIGHT.apply(coordinates);
+            case MOVE_UP:
+                return Direction.UP.apply(coordinates);
+            case MOVE_LEFT:
+                return Direction.LEFT.apply(coordinates);
+            case MOVE_DOWN:
+                return Direction.DOWN.apply(coordinates);
+            default:
+                break;
+        }
+        return null;
     }
 }
