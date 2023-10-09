@@ -1,6 +1,5 @@
 package ru.mipt.bit.platformer.model;
 
-import org.lwjgl.system.NonnullDefault;
 import ru.mipt.bit.platformer.controller.MoveAction;
 
 import java.util.Objects;
@@ -8,7 +7,7 @@ import java.util.Objects;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class Tank implements GameObject, Controllable {
+public class Tank implements GameObject, Movable {
     private Coordinates coordinates;
     private Coordinates destinationCoordinates;
     private float movementProgress;
@@ -23,6 +22,7 @@ public class Tank implements GameObject, Controllable {
         this.movementSpeed = movementSpeed;
     }
 
+    @Override
     public boolean isMoving() {
         return !isEqual(movementProgress, 1f);
     }
@@ -32,6 +32,7 @@ public class Tank implements GameObject, Controllable {
         return coordinates;
     }
 
+    @Override
     public void startMovement(Direction direction) {
         destinationCoordinates = direction.apply(coordinates);
         movementProgress = 0f;
@@ -46,6 +47,7 @@ public class Tank implements GameObject, Controllable {
         return movementProgress;
     }
 
+    @Override
     public void updateState(float deltaTime) {
         movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
         if (isEqual(movementProgress, 1f)) {
@@ -57,6 +59,7 @@ public class Tank implements GameObject, Controllable {
         return direction.getRotation();
     }
 
+    @Override
     public void changeDirection(Direction newDirection) {
         direction = newDirection;
     }
@@ -67,7 +70,7 @@ public class Tank implements GameObject, Controllable {
     }
 
     @Override
-    public Controllable afterAction(@NonnullDefault MoveAction moveAction) {
+    public Movable afterAction(MoveAction moveAction) {
         if (isMoving()) {
             return this;
         }

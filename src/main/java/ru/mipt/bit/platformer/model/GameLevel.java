@@ -7,43 +7,31 @@ import java.util.List;
 import java.util.Map;
 
 public class GameLevel {
-    private final List<Controllable> controllables = new ArrayList<>();
-    private final List<Obstacle> obstacles = new ArrayList<>();
+    private final List<GameObject> gameObjects = new ArrayList<>();
 
-    public void add(Controllable controllable) {
-        controllables.add(controllable);
+    public void add(GameObject gameObject) {
+        gameObjects.add(gameObject);
     }
 
-    public void add(Obstacle obstacle) {
-        obstacles.add(obstacle);
-    }
-
-    public void applyActions(Map<Controllable, MoveAction> actionMap) {
-        for (Map.Entry<Controllable, MoveAction> entry : actionMap.entrySet()) {
-            Controllable controllable = entry.getKey();
-            MoveAction moveAction = entry.getValue();
-            if (moveAction == null) continue;
-            Controllable futureControllable = controllable.afterAction(moveAction);
-            if (futureControllable.equals(controllable)) {
+    public void applyActions(Map<Movable, MoveAction> actionMap) {
+        for (Map.Entry<Movable, MoveAction> entry : actionMap.entrySet()) {
+            Movable movable = entry.getKey();
+            MoveAction action = entry.getValue();
+            if (action == null) continue;
+            Movable futureMovable = movable.afterAction(action);
+            if (futureMovable.equals(movable)) {
                 continue;
             }
-            if (!goingToCollide(controllable, futureControllable)) {
-                controllable.apply(moveAction);
+            if (!goingToCollide(movable, futureMovable)) {
+                movable.apply(action);
             }
         }
     }
 
-    private boolean goingToCollide(Controllable initialControllable, Controllable futureControllable) {
-        for (Obstacle obstacle : obstacles) {
-            if (futureControllable.getCoordinates().equals(obstacle.getCoordinates())) {
-                return true;
-            }
-        }
-        for (Controllable controllable : controllables) {
-            if (controllable.equals(initialControllable)) {
-                continue;
-            }
-            if (futureControllable.getCoordinates().equals(controllable.getCoordinates())) {
+    private boolean goingToCollide(Movable initialMovable, Movable futureMovable) {
+        for (GameObject gameObject : gameObjects) {
+            if (initialMovable.equals(gameObject)) continue;
+            if (futureMovable.getCoordinates().equals(gameObject.getCoordinates())) {
                 return true;
             }
         }
@@ -51,8 +39,8 @@ public class GameLevel {
     }
 
     public void updateState(float deltaTime) {
-        for (Controllable controllable : controllables) {
-            controllable.updateState(deltaTime);
+        for (GameObject gameObject : gameObjects) {
+            gameObject.updateState(deltaTime);
         }
     }
 }

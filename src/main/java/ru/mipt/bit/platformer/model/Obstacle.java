@@ -26,4 +26,9 @@ public class Obstacle implements GameObject {
     public float getMovementProgress() {
         return 1f;
     }
+
+    @Override
+    public void updateState(float deltaTime) {
+        // does nothing for now
+    }
 }

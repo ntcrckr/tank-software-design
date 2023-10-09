@@ -5,4 +5,5 @@ public interface GameObject {
     Coordinates getDestinationCoordinates();
     float getRotation();
     float getMovementProgress();
+    void updateState(float deltaTime);
 }

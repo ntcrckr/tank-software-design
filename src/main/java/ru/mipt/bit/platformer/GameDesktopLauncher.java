@@ -39,7 +39,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Map<Controllable, MoveAction> actionMap = actionGenerator.generateActions();
+        Map<Movable, MoveAction> actionMap = actionGenerator.generateActions();
 
         gameLevel.applyActions(actionMap);
 
