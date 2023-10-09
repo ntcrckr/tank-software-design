@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
-import ru.mipt.bit.platformer.controller.MoveAction;
+import ru.mipt.bit.platformer.model.actions.MoveAction;
 
 import java.util.ArrayList;
 import java.util.List;

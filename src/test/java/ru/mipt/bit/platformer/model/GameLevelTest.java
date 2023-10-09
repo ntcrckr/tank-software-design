@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
-import ru.mipt.bit.platformer.controller.MoveAction;
+import ru.mipt.bit.platformer.model.actions.MoveAction;
 
 import java.util.Map;
 import java.util.HashMap;

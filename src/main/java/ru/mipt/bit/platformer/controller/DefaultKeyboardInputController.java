@@ -1,5 +1,7 @@
 package ru.mipt.bit.platformer.controller;
 
+import ru.mipt.bit.platformer.model.actions.MoveAction;
+
 import static com.badlogic.gdx.Input.Keys.*;
 
 public class DefaultKeyboardInputController extends InputController {

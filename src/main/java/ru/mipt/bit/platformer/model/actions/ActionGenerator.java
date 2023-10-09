@@ -1,5 +1,6 @@
-package ru.mipt.bit.platformer.controller;
+package ru.mipt.bit.platformer.model.actions;
 
+import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.model.Movable;
 
 import java.util.HashMap;

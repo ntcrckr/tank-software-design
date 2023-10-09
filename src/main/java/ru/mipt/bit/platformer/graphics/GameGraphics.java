@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.view;
+package ru.mipt.bit.platformer.graphics;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

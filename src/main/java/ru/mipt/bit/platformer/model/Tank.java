@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
-import ru.mipt.bit.platformer.controller.MoveAction;
+import ru.mipt.bit.platformer.model.actions.MoveAction;
 
 import java.util.Objects;
 
@@ -74,6 +74,7 @@ public class Tank implements GameObject, Movable {
         if (isMoving()) {
             return this;
         }
+        changeDirection(moveAction.getDirection());
         return new Tank(moveAction.getDirection().apply(coordinates), direction, movementSpeed);
     }
 
