@@ -24,18 +24,18 @@ class TankTest {
     @Test
     void testActionApply() {
         Tank tank = new Tank(new Coordinates(0, 0), Direction.RIGHT, 1f);
-        Coordinates coordinates = tank.tryToApply(Action.MOVE_RIGHT);
-        assertEquals(coordinates, new Coordinates(1, 0));
-        coordinates = tank.tryToApply(Action.MOVE_DOWN);
-        assertEquals(coordinates, new Coordinates(0, -1));
-        coordinates = tank.tryToApply(Action.MOVE_LEFT);
-        assertEquals(coordinates, new Coordinates(-1, 0));
-        coordinates = tank.tryToApply(Action.MOVE_UP);
-        assertEquals(coordinates, new Coordinates(0, 1));
-        coordinates = tank.tryToApply(null);
-        assertNull(coordinates);
+        Controllable controllable = tank.afterAction(Action.MOVE_RIGHT);
+        assertEquals(controllable, new Tank(new Coordinates(1, 0), Direction.RIGHT, 1f));
+        controllable = tank.afterAction(Action.MOVE_DOWN);
+        assertEquals(controllable, new Tank(new Coordinates(0, -1), Direction.RIGHT, 1f));
+        controllable = tank.afterAction(Action.MOVE_LEFT);
+        assertEquals(controllable, new Tank(new Coordinates(-1, 0), Direction.RIGHT, 1f));
+        controllable = tank.afterAction(Action.MOVE_UP);
+        assertEquals(controllable, new Tank(new Coordinates(0, 1), Direction.RIGHT, 1f));
+        controllable = tank.afterAction(null);
+        assertNull(controllable);
         tank.startMovement(Direction.RIGHT);
-        coordinates = tank.tryToApply(Action.MOVE_UP);
-        assertNull(coordinates);
+        controllable = tank.afterAction(Action.MOVE_UP);
+        assertNull(controllable);
     }
 }

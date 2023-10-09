@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
-public class Obstacle implements Drawable {
+public class Obstacle implements GameObject {
     private final Coordinates coordinates;
     private final Direction direction;
 

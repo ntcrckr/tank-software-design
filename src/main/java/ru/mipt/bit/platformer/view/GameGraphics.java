@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.view;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -8,13 +9,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
-import ru.mipt.bit.platformer.model.Drawable;
+import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.util.Converter;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
 public class GameGraphics {
@@ -33,8 +35,8 @@ public class GameGraphics {
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
     }
 
-    public void add(Drawable drawable, String texturePath) {
-        graphics.add(new GameObjectGraphics(new Texture(texturePath), drawable));
+    public void add(GameObject gameObject, String texturePath) {
+        graphics.add(new GameObjectGraphics(new Texture(texturePath), gameObject));
     }
 
     public void moveRectanglesAtTileCenters() {
@@ -74,6 +76,11 @@ public class GameGraphics {
 
         // submit all drawing requests
         batch.end();
+    }
+
+    public void clearScreen() {
+        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
+        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
     }
 
     public void dispose() {

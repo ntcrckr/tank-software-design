@@ -2,8 +2,10 @@ package ru.mipt.bit.platformer.model;
 
 import ru.mipt.bit.platformer.controller.Action;
 
-public interface Controllable {
+public interface Controllable extends GameObject {
     void apply(Action action);
 
-    Coordinates tryToApply(Action action);
+    Controllable afterAction(Action action);
+
+    void updateState(float deltaTime);
 }

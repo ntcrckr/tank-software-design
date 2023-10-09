@@ -5,7 +5,7 @@ import ru.mipt.bit.platformer.controller.Action;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class Tank implements Drawable, Controllable {
+public class Tank implements GameObject, Controllable {
     private Coordinates coordinates;
     private Coordinates destinationCoordinates;
     private float movementProgress;
@@ -82,7 +82,7 @@ public class Tank implements Drawable, Controllable {
     }
 
     @Override
-    public Coordinates tryToApply(Action action) {
+    public Controllable afterAction(Action action) {
         if (action == null) {
             return null;
         }
@@ -91,16 +91,15 @@ public class Tank implements Drawable, Controllable {
         }
         switch (action) {
             case MOVE_RIGHT:
-                return Direction.RIGHT.apply(coordinates);
+                return new Tank(Direction.RIGHT.apply(coordinates), direction, movementSpeed);
             case MOVE_UP:
-                return Direction.UP.apply(coordinates);
+                return new Tank(Direction.UP.apply(coordinates), direction, movementSpeed);
             case MOVE_LEFT:
-                return Direction.LEFT.apply(coordinates);
+                return new Tank(Direction.LEFT.apply(coordinates), direction, movementSpeed);
             case MOVE_DOWN:
-                return Direction.DOWN.apply(coordinates);
+                return new Tank(Direction.DOWN.apply(coordinates), direction, movementSpeed);
             default:
-                break;
+                return new Tank(coordinates, direction, movementSpeed);
         }
-        return null;
     }
 }

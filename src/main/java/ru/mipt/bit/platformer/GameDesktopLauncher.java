@@ -6,13 +6,11 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.controller.Action;
 import ru.mipt.bit.platformer.controller.ActionGenerator;
-import ru.mipt.bit.platformer.controller.ControllerType;
+import ru.mipt.bit.platformer.controller.DefaultKeyboardInputController;
 import ru.mipt.bit.platformer.view.GameGraphics;
 import ru.mipt.bit.platformer.model.*;
 
 import java.util.Map;
-
-import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameDesktopLauncher implements ApplicationListener {
     private ActionGenerator actionGenerator;
@@ -32,12 +30,12 @@ public class GameDesktopLauncher implements ApplicationListener {
         gameGraphics.moveRectanglesAtTileCenters();
 
         actionGenerator = new ActionGenerator();
-        actionGenerator.add(playerTank, ControllerType.INPUT_CONTROLLER);
+        actionGenerator.add(playerTank, new DefaultKeyboardInputController());
     }
 
     @Override
     public void render() {
-        clearScreen();
+        gameGraphics.clearScreen();
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
@@ -48,11 +46,6 @@ public class GameDesktopLauncher implements ApplicationListener {
         gameLevel.updateState(deltaTime);
 
         gameGraphics.draw();
-    }
-
-    private static void clearScreen() {
-        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
-        Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
     }
 
     @Override
