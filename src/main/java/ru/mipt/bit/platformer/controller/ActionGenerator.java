@@ -12,11 +12,11 @@ public class ActionGenerator {
         controllerTypeMap.put(controllable, controller);
     }
 
-    public Map<Controllable, Action> generateActions() {
-        Map<Controllable, Action> actionMap = new HashMap<>();
+    public Map<Controllable, MoveAction> generateActions() {
+        Map<Controllable, MoveAction> actionMap = new HashMap<>();
         for (Map.Entry<Controllable, Controller> entry : controllerTypeMap.entrySet()) {
-            Action action = entry.getValue().getAction();
-            actionMap.put(entry.getKey(), action);
+            MoveAction moveAction = entry.getValue().getAction();
+            actionMap.put(entry.getKey(), moveAction);
         }
         return actionMap;
     }

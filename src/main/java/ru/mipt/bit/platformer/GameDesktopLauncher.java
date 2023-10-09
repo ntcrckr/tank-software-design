@@ -4,7 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import ru.mipt.bit.platformer.controller.Action;
+import ru.mipt.bit.platformer.controller.MoveAction;
 import ru.mipt.bit.platformer.controller.ActionGenerator;
 import ru.mipt.bit.platformer.controller.DefaultKeyboardInputController;
 import ru.mipt.bit.platformer.view.GameGraphics;
@@ -39,7 +39,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Map<Controllable, Action> actionMap = actionGenerator.generateActions();
+        Map<Controllable, MoveAction> actionMap = actionGenerator.generateActions();
 
         gameLevel.applyActions(actionMap);
 

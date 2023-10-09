@@ -6,15 +6,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class InputController implements Controller {
-    private final Map<Integer, Action> keyToActionMap = new HashMap<>();
+    private final Map<Integer, MoveAction> keyToActionMap = new HashMap<>();
 
     public InputController() {}
 
-    public void addMapping(Integer key, Action action) {
-        keyToActionMap.put(key, action);
+    public void addMapping(Integer key, MoveAction moveAction) {
+        keyToActionMap.put(key, moveAction);
     }
 
-    public Action getAction() {
+    public MoveAction getAction() {
         for (Integer key :
                 keyToActionMap.keySet()) {
             if (Gdx.input.isKeyPressed(key)) {

@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
-import ru.mipt.bit.platformer.controller.Action;
+import ru.mipt.bit.platformer.controller.MoveAction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +18,17 @@ public class GameLevel {
         obstacles.add(obstacle);
     }
 
-    public void applyActions(Map<Controllable, Action> actionMap) {
-        for (Map.Entry<Controllable, Action> entry : actionMap.entrySet()) {
+    public void applyActions(Map<Controllable, MoveAction> actionMap) {
+        for (Map.Entry<Controllable, MoveAction> entry : actionMap.entrySet()) {
             Controllable controllable = entry.getKey();
-            Action action = entry.getValue();
-            Controllable futureControllable = controllable.afterAction(action);
+            MoveAction moveAction = entry.getValue();
+            if (moveAction == null) continue;
+            Controllable futureControllable = controllable.afterAction(moveAction);
             if (futureControllable.equals(controllable)) {
                 continue;
             }
             if (!goingToCollide(controllable, futureControllable)) {
-                controllable.apply(action);
+                controllable.apply(moveAction);
             }
         }
     }

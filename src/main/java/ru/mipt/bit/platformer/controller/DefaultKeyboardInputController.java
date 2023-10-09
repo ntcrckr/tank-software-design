@@ -5,13 +5,13 @@ import static com.badlogic.gdx.Input.Keys.*;
 public class DefaultKeyboardInputController extends InputController {
     public DefaultKeyboardInputController() {
         super();
-        addMapping(UP, Action.MOVE_UP);
-        addMapping(W, Action.MOVE_UP);
-        addMapping(LEFT, Action.MOVE_LEFT);
-        addMapping(A, Action.MOVE_LEFT);
-        addMapping(DOWN, Action.MOVE_DOWN);
-        addMapping(S, Action.MOVE_DOWN);
-        addMapping(RIGHT, Action.MOVE_RIGHT);
-        addMapping(D, Action.MOVE_RIGHT);
+        addMapping(UP, MoveAction.UP);
+        addMapping(W, MoveAction.UP);
+        addMapping(LEFT, MoveAction.LEFT);
+        addMapping(A, MoveAction.LEFT);
+        addMapping(DOWN, MoveAction.DOWN);
+        addMapping(S, MoveAction.DOWN);
+        addMapping(RIGHT, MoveAction.RIGHT);
+        addMapping(D, MoveAction.RIGHT);
     }
 }
