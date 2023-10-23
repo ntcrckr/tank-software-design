@@ -1,6 +1,8 @@
-TTTTTTTTT
-TTTTTT__T
-T__T____T
-T__T____T
-T_______T
-T_X_____T
+TTTTTTTTTT
+T________T
+T________T
+T________T
+T________T
+T________T
+T__X_____T
+TTTTTTTTTT

@@ -43,7 +43,6 @@ public class GameGraphics {
 
     public void addGameObject(GameObject gameObject, String texturePath) {
         if (gameObject instanceof Movable) {
-            System.out.println(gameObject);
             movableGraphics.add(new GameObjectGraphics<>(new Texture(texturePath), (Movable) gameObject));
         } else {
             graphics.add(new GameObjectGraphics<>(new Texture(texturePath), gameObject));

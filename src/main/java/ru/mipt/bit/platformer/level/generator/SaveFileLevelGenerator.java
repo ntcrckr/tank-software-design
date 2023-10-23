@@ -42,12 +42,13 @@ public class SaveFileLevelGenerator implements LevelGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        int y = (int) fileStream.count();
+        int y = (int) fileStream.count() - 1;
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             for (int x = 0; x < line.length(); x++) {
                 char c = line.charAt(x);
+                System.out.printf("%d %d: %c\n", x, y, c);
                 SaveFileGameObject saveFileGameObject = SaveFileGameObject.byNotation(c);
 
                 if (saveFileGameObject.isProvidable()) {
