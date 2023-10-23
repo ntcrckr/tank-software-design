@@ -31,6 +31,7 @@ public class GameDesktopLauncher implements ApplicationListener {
             throw new RuntimeException(e);
         }
         int mode = scanner.nextInt();
+        scanner.close();
         LevelGenerator levelGenerator = switch (mode) {
             case 1 -> new DefaultLevelGenerator();
             case 2 -> new RandomLevelGenerator(10, 8, 10);
