@@ -7,13 +7,13 @@ import ru.mipt.bit.platformer.model.GameObject;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 
-public class GameObjectGraphics {
+public class GameObjectGraphics <T extends GameObject> {
     private final Texture texture;
     private final TextureRegion textureRegion;
     private final Rectangle rectangle;
-    private final GameObject gameObject;
+    private final T gameObject;
 
-    public GameObjectGraphics(Texture texture, GameObject gameObject) {
+    public GameObjectGraphics(Texture texture, T gameObject) {
         this.texture = texture;
         this.gameObject = gameObject;
         this.textureRegion = new TextureRegion(this.texture);
@@ -32,7 +32,7 @@ public class GameObjectGraphics {
         return rectangle;
     }
 
-    public GameObject getDrawable() {
+    public T getDrawable() {
         return gameObject;
     }
 }

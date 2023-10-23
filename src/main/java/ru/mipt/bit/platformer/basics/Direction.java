@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.model;
+package ru.mipt.bit.platformer.basics;
 
 public enum Direction {
     RIGHT(new Coordinates(1, 0), 0f),
@@ -14,7 +14,7 @@ public enum Direction {
         this.rotation = rotation;
     }
 
-    Coordinates apply(Coordinates coordinates) {
+    public Coordinates apply(Coordinates coordinates) {
         return coordinates.add(vector);
     }
 

@@ -1,7 +1,6 @@
-package ru.mipt.bit.platformer.model.actions;
+package ru.mipt.bit.platformer.actions;
 
-import ru.mipt.bit.platformer.model.Direction;
-import ru.mipt.bit.platformer.model.actions.Action;
+import ru.mipt.bit.platformer.basics.Direction;
 
 public enum MoveAction implements Action {
     RIGHT(Direction.RIGHT),

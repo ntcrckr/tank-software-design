@@ -1,6 +1,6 @@
-package ru.mipt.bit.platformer.controller;
+package ru.mipt.bit.platformer.controller.input;
 
-import ru.mipt.bit.platformer.model.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.MoveAction;
 
 import static com.badlogic.gdx.Input.Keys.*;
 

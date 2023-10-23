@@ -4,7 +4,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
-import ru.mipt.bit.platformer.model.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.basics.Direction;
+import ru.mipt.bit.platformer.level.GameLevel;
 
 import java.util.Map;
 import java.util.HashMap;

@@ -1,9 +1,12 @@
 package ru.mipt.bit.platformer.model;
 
+import ru.mipt.bit.platformer.basics.Coordinates;
+
 public interface GameObject {
+
     Coordinates getCoordinates();
-    Coordinates getDestinationCoordinates();
+
     float getRotation();
-    float getMovementProgress();
+
     void updateState(float deltaTime);
 }

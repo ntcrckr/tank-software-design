@@ -2,24 +2,30 @@ package ru.mipt.bit.platformer;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import ru.mipt.bit.platformer.model.actions.MoveAction;
-import ru.mipt.bit.platformer.model.actions.ActionGenerator;
-import ru.mipt.bit.platformer.controller.DefaultKeyboardInputController;
+import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.ActionGenerator;
+import ru.mipt.bit.platformer.controller.input.DefaultKeyboardInputController;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
+import ru.mipt.bit.platformer.level.GameLevel;
+import ru.mipt.bit.platformer.level.generator.LevelGenerator;
+import ru.mipt.bit.platformer.level.generator.LevelInfo;
+import ru.mipt.bit.platformer.level.generator.SaveFileLevelGenerator;
 import ru.mipt.bit.platformer.model.*;
+import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.basics.Direction;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.io.File;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
-    private static final String mode = "file";
     private ActionGenerator actionGenerator = new ActionGenerator();
-    private final GameLevel gameLevel = new GameLevel();
-    private final GameGraphics gameGraphics = new GameGraphics();
+    private GameLevel gameLevel = new GameLevel();
+    private GameGraphics gameGraphics = new GameGraphics();
 
     private static class RandomCoordinatesGenerator {
         private final Random random = new Random();
@@ -43,18 +49,26 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void create() {
+        File file = new File("src/main/resources/mode");
+        Scanner scanner;
+        try {
+            scanner = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+        int mode = scanner.nextInt();
         switch (mode) {
-            case "basic":
+            case 1:
                 basicCreate();
                 break;
-            case "random":
-                randomCreate();
-                break;
-            case "file":
+            case 2:
                 fileCreate();
                 break;
-            default:
+            case 3:
+                randomCreate();
                 break;
+            default:
+                throw new RuntimeException();
         }
     }
 
@@ -62,11 +76,11 @@ public class GameDesktopLauncher implements ApplicationListener {
         gameGraphics.init();
         Tank playerTank = new Tank(new Coordinates(1, 1), Direction.RIGHT, 0.4f);
         gameLevel.add(playerTank);
-        gameGraphics.add(playerTank, "images/tank_blue.png");
+        gameGraphics.addGameObject(playerTank, "images/tank_blue.png");
         actionGenerator.add(playerTank, new DefaultKeyboardInputController());
         Obstacle tree = new Obstacle(new Coordinates(1, 3));
         gameLevel.add(tree);
-        gameGraphics.add(tree, "images/greenTree.png");
+        gameGraphics.addGameObject(tree, "images/greenTree.png");
         gameGraphics.moveRectanglesAtTileCenters();
     }
 
@@ -75,48 +89,20 @@ public class GameDesktopLauncher implements ApplicationListener {
         RandomCoordinatesGenerator coordinatesGenerator = new RandomCoordinatesGenerator();
         Tank playerTank = new Tank(coordinatesGenerator.getCoordinates(), Direction.RIGHT, 0.4f);
         gameLevel.add(playerTank);
-        gameGraphics.add(playerTank, "images/tank_blue.png");
+        gameGraphics.addGameObject(playerTank, "images/tank_blue.png");
         actionGenerator.add(playerTank, new DefaultKeyboardInputController());
         Obstacle tree = new Obstacle(coordinatesGenerator.getCoordinates());
         gameLevel.add(tree);
-        gameGraphics.add(tree, "images/greenTree.png");
+        gameGraphics.addGameObject(tree, "images/greenTree.png");
         gameGraphics.moveRectanglesAtTileCenters();
     }
 
     private void fileCreate() {
-        gameGraphics.init();
-        int y = 6;
-        try {
-            File file = new File("src/main/resources/level.txt");
-            Scanner myReader = new Scanner(file);
-            while (myReader.hasNextLine()) {
-                String line = myReader.nextLine();
-                for (int x = 0; x < line.length(); x++) {
-                    char c = line.charAt(x);
-                    switch (c) {
-                        case 'T':
-                            Obstacle tree = new Obstacle(new Coordinates(x, y));
-                            gameLevel.add(tree);
-                            gameGraphics.add(tree, "images/greenTree.png");
-                            break;
-                        case 'X':
-                            Tank playerTank = new Tank(new Coordinates(x, y), Direction.RIGHT, 0.4f);
-                            gameLevel.add(playerTank);
-                            gameGraphics.add(playerTank, "images/tank_blue.png");
-                            actionGenerator.add(playerTank, new DefaultKeyboardInputController());
-                            break;
-                        case '_':
-                        default:
-                            break;
-                    }
-                }
-                y -= 1;
-            }
-            myReader.close();
-            gameGraphics.moveRectanglesAtTileCenters();
-        } catch (FileNotFoundException e) {
-            System.out.println("File not found.");
-        }
+        LevelGenerator levelGenerator = new SaveFileLevelGenerator("src/main/resources/level.txt");
+        LevelInfo levelInfo = levelGenerator.generate();
+        gameLevel = levelInfo.getGameLevel();
+        gameGraphics = levelInfo.getGameGraphics();
+        actionGenerator = levelInfo.getActionGenerator();
     }
 
     @Override

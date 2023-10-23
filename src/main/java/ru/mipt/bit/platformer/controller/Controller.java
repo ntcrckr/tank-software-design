@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.controller;
 
-import ru.mipt.bit.platformer.model.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.MoveAction;
 
 public interface Controller {
     MoveAction getAction();

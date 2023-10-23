@@ -1,6 +1,8 @@
-package ru.mipt.bit.platformer.model;
+package ru.mipt.bit.platformer.level;
 
-import ru.mipt.bit.platformer.model.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.model.GameObject;
+import ru.mipt.bit.platformer.model.Movable;
 
 import java.util.ArrayList;
 import java.util.List;

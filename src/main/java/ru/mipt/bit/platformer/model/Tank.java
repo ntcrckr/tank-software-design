@@ -1,6 +1,8 @@
 package ru.mipt.bit.platformer.model;
 
-import ru.mipt.bit.platformer.model.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.basics.Direction;
 
 import java.util.Objects;
 

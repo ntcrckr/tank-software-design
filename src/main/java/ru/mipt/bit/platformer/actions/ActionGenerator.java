@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.model.actions;
+package ru.mipt.bit.platformer.actions;
 
 import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.model.Movable;

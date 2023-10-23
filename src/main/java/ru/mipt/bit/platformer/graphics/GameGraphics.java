@@ -10,22 +10,28 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.math.Interpolation;
 import ru.mipt.bit.platformer.model.GameObject;
+import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.Converter;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.*;
 
 public class GameGraphics {
-    private final List<GameObjectGraphics> graphics = new ArrayList<>();
+    private final List<GameObjectGraphics<GameObject>> graphics = new ArrayList<>();
+    private final List<GameObjectGraphics<Movable>> movableGraphics = new ArrayList<>();
     private Batch batch;
     private TiledMap level;
     private MapRenderer levelRenderer;
     private TileMovement tileMovement;
     private TiledMapTileLayer groundLayer;
+
+    public GameGraphics() {
+    }
 
     public void init() {
         batch = new SpriteBatch();
@@ -35,27 +41,32 @@ public class GameGraphics {
         tileMovement = new TileMovement(groundLayer, Interpolation.smooth);
     }
 
-    public void add(GameObject gameObject, String texturePath) {
-        graphics.add(new GameObjectGraphics(new Texture(texturePath), gameObject));
-    }
-
-    public void moveRectanglesAtTileCenters() {
-        for (GameObjectGraphics graphic : graphics) {
-            moveRectangleAtTileCenter(
-                    groundLayer,
-                    graphic.getRectangle(),
-                    Converter.coordinatesToGridPoint2(graphic.getDrawable().getCoordinates())
-            );
+    public void addGameObject(GameObject gameObject, String texturePath) {
+        if (gameObject instanceof Movable) {
+            System.out.println(gameObject);
+            movableGraphics.add(new GameObjectGraphics<>(new Texture(texturePath), (Movable) gameObject));
+        } else {
+            graphics.add(new GameObjectGraphics<>(new Texture(texturePath), gameObject));
         }
     }
 
+    public void moveRectanglesAtTileCenters() {
+        Stream.concat(graphics.stream(), movableGraphics.stream()).forEach(
+            gameObjectGraphics -> moveRectangleAtTileCenter(
+                groundLayer,
+                gameObjectGraphics.getRectangle(),
+                Converter.coordinatesToGridPoint2(gameObjectGraphics.getDrawable().getCoordinates())
+            )
+        );
+    }
+
     public void draw() {
-        for (GameObjectGraphics graphic : graphics) {
+        for (GameObjectGraphics<Movable> movableGraphic : movableGraphics) {
             tileMovement.moveRectangleBetweenTileCenters(
-                    graphic.getRectangle(),
-                    Converter.coordinatesToGridPoint2(graphic.getDrawable().getCoordinates()),
-                    Converter.coordinatesToGridPoint2(graphic.getDrawable().getDestinationCoordinates()),
-                    graphic.getDrawable().getMovementProgress()
+                movableGraphic.getRectangle(),
+                Converter.coordinatesToGridPoint2(movableGraphic.getDrawable().getCoordinates()),
+                Converter.coordinatesToGridPoint2(movableGraphic.getDrawable().getDestinationCoordinates()),
+                movableGraphic.getDrawable().getMovementProgress()
             );
         }
 
@@ -65,14 +76,14 @@ public class GameGraphics {
         // start recording all drawing commands
         batch.begin();
 
-        for (GameObjectGraphics graphic : graphics) {
-            drawTextureRegionUnscaled(
+        Stream.concat(graphics.stream(), movableGraphics.stream()).forEach(
+            gameObjectGraphics -> drawTextureRegionUnscaled(
                     batch,
-                    graphic.getTextureRegion(),
-                    graphic.getRectangle(),
-                    graphic.getDrawable().getRotation()
-            );
-        }
+                    gameObjectGraphics.getTextureRegion(),
+                    gameObjectGraphics.getRectangle(),
+                    gameObjectGraphics.getDrawable().getRotation()
+            )
+        );
 
         // submit all drawing requests
         batch.end();
@@ -84,7 +95,7 @@ public class GameGraphics {
     }
 
     public void dispose() {
-        for (GameObjectGraphics graphic : graphics) {
+        for (GameObjectGraphics<GameObject> graphic : graphics) {
             graphic.getTexture().dispose();
         }
         level.dispose();

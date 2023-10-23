@@ -1,5 +1,8 @@
 package ru.mipt.bit.platformer.model;
 
+import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.basics.Direction;
+
 public class Obstacle implements GameObject {
     private final Coordinates coordinates;
     private final Direction direction;
@@ -13,18 +16,8 @@ public class Obstacle implements GameObject {
         return coordinates;
     }
 
-    @Override
-    public Coordinates getDestinationCoordinates() {
-        return coordinates;
-    }
-
     public float getRotation() {
         return direction.getRotation();
-    }
-
-    @Override
-    public float getMovementProgress() {
-        return 1f;
     }
 
     @Override

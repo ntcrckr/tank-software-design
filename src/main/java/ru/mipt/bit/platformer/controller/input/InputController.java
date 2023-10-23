@@ -1,7 +1,8 @@
-package ru.mipt.bit.platformer.controller;
+package ru.mipt.bit.platformer.controller.input;
 
 import com.badlogic.gdx.Gdx;
-import ru.mipt.bit.platformer.model.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.controller.Controller;
 
 import java.util.HashMap;
 import java.util.Map;
