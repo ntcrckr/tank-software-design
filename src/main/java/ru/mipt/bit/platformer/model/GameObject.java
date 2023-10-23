@@ -2,9 +2,11 @@ package ru.mipt.bit.platformer.model;
 
 import ru.mipt.bit.platformer.basics.Coordinates;
 
+import java.util.List;
+
 public interface GameObject {
 
-    Coordinates getCoordinates();
+    List<Coordinates> getCoordinates();
 
     float getRotation();
 

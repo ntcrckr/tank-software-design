@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -24,7 +25,7 @@ public class SaveFileLevelGenerator implements LevelGenerator {
 
     @Override
     public LevelInfo generate() {
-        GameLevel gameLevel = new GameLevel();
+        GameLevel gameLevel = null;
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
@@ -46,16 +47,18 @@ public class SaveFileLevelGenerator implements LevelGenerator {
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            for (int x = 0; x < line.length(); x++) {
+            int lineLength = line.length();
+            for (int x = 0; x < lineLength; x++) {
                 char c = line.charAt(x);
                 System.out.printf("%d %d: %c\n", x, y, c);
                 SaveFileGameObject saveFileGameObject = SaveFileGameObject.byNotation(c);
 
                 if (saveFileGameObject.isProvidable()) {
-                    Coordinates coordinates = new Coordinates(x, y);
+                    List<Coordinates> coordinates = List.of(new Coordinates(x, y));
                     GameObject gameObject = saveFileGameObject.provideObject(coordinates);
                     String texturePath = saveFileGameObject.provideTexturePath();
 
+                    if (gameLevel == null) gameLevel = new GameLevel(0, lineLength-1, 0, y-1);
                     gameLevel.add(gameObject);
                     gameGraphics.addGameObject(gameObject, texturePath);
 

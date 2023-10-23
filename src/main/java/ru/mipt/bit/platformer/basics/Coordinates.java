@@ -1,26 +1,9 @@
 package ru.mipt.bit.platformer.basics;
 
-import java.util.Objects;
-
-public class Coordinates {
-    private final Integer x;
-    private final Integer y;
-
-    public Coordinates(Integer x, Integer y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public Integer getX() {
-        return x;
-    }
-
-    public Integer getY() {
-        return y;
-    }
+public record Coordinates(Integer x, Integer y) {
 
     public Coordinates add(Coordinates vector) {
-        return new Coordinates(x + vector.getX(), y + vector.getY());
+        return new Coordinates(x + vector.x(), y + vector.y());
     }
 
     @Override
@@ -31,16 +14,4 @@ public class Coordinates {
                 '}';
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Coordinates that = (Coordinates) o;
-        return Objects.equals(x, that.x) && Objects.equals(y, that.y);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y);
-    }
 }

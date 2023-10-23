@@ -4,6 +4,8 @@ import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Obstacle;
 
+import java.util.List;
+
 public class ObstacleProvider implements GameObjectProvider {
 
     private final String texturePath;
@@ -13,7 +15,7 @@ public class ObstacleProvider implements GameObjectProvider {
     }
 
     @Override
-    public GameObject provideObject(Coordinates coordinates) {
+    public GameObject provideObject(List<Coordinates> coordinates) {
         return new Obstacle(coordinates);
     }
 

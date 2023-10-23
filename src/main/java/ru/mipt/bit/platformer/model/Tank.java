@@ -4,24 +4,27 @@ import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class Tank implements GameObject, Movable {
-    private Coordinates coordinates;
-    private Coordinates destinationCoordinates;
+    private final int uid;
+    private List<Coordinates> coordinates;
+    private List<Coordinates> destinationCoordinates;
     private float movementProgress;
     private Direction direction;
     private final float movementSpeed;
 
-    public Tank(Coordinates coordinates, Direction direction, float movementSpeed) {
+    public Tank(List<Coordinates> coordinates, Direction direction, float movementSpeed) {
         this.coordinates = coordinates;
         this.destinationCoordinates = coordinates;
         this.movementProgress = 1f;
         this.direction = direction;
         this.movementSpeed = movementSpeed;
+        this.uid = Objects.hash(coordinates, direction, movementSpeed);
     }
 
     @Override
@@ -30,7 +33,8 @@ public class Tank implements GameObject, Movable {
     }
 
 
-    public Coordinates getCoordinates() {
+    @Override
+    public List<Coordinates> getCoordinates() {
         return coordinates;
     }
 
@@ -41,10 +45,12 @@ public class Tank implements GameObject, Movable {
         changeDirection(direction);
     }
 
-    public Coordinates getDestinationCoordinates() {
+    @Override
+    public List<Coordinates> getDestinationCoordinates() {
         return destinationCoordinates;
     }
 
+    @Override
     public float getMovementProgress() {
         return movementProgress;
     }
@@ -57,6 +63,7 @@ public class Tank implements GameObject, Movable {
         }
     }
 
+    @Override
     public float getRotation() {
         return direction.getRotation();
     }
@@ -85,11 +92,11 @@ public class Tank implements GameObject, Movable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tank tank = (Tank) o;
-        return Float.compare(movementProgress, tank.movementProgress) == 0 && Float.compare(movementSpeed, tank.movementSpeed) == 0 && Objects.equals(coordinates, tank.coordinates) && Objects.equals(destinationCoordinates, tank.destinationCoordinates) && direction == tank.direction;
+        return Objects.equals(uid, tank.uid);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(coordinates, destinationCoordinates, movementProgress, direction, movementSpeed);
+        return uid;
     }
 }

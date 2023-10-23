@@ -5,6 +5,8 @@ import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Tank;
 
+import java.util.List;
+
 public class TankProvider implements GameObjectProvider {
 
     private final String texturePath;
@@ -14,7 +16,7 @@ public class TankProvider implements GameObjectProvider {
     }
 
     @Override
-    public GameObject provideObject(Coordinates coordinates) {
+    public GameObject provideObject(List<Coordinates> coordinates) {
         return new Tank(coordinates, Direction.RIGHT, 0.4f);
     }
 

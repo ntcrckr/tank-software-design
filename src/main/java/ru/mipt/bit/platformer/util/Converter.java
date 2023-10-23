@@ -5,6 +5,6 @@ import ru.mipt.bit.platformer.basics.Coordinates;
 
 public class Converter {
     public static GridPoint2 coordinatesToGridPoint2(Coordinates coordinates) {
-        return new GridPoint2(coordinates.getX(), coordinates.getY());
+        return new GridPoint2(coordinates.x(), coordinates.y());
     }
 }

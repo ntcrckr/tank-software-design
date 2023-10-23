@@ -54,7 +54,7 @@ public class GameGraphics {
             gameObjectGraphics -> moveRectangleAtTileCenter(
                 groundLayer,
                 gameObjectGraphics.getRectangle(),
-                Converter.coordinatesToGridPoint2(gameObjectGraphics.getDrawable().getCoordinates())
+                Converter.coordinatesToGridPoint2(gameObjectGraphics.getDrawable().getCoordinates().get(0))
             )
         );
     }
@@ -63,8 +63,8 @@ public class GameGraphics {
         for (GameObjectGraphics<Movable> movableGraphic : movableGraphics) {
             tileMovement.moveRectangleBetweenTileCenters(
                 movableGraphic.getRectangle(),
-                Converter.coordinatesToGridPoint2(movableGraphic.getDrawable().getCoordinates()),
-                Converter.coordinatesToGridPoint2(movableGraphic.getDrawable().getDestinationCoordinates()),
+                Converter.coordinatesToGridPoint2(movableGraphic.getDrawable().getCoordinates().get(0)),
+                Converter.coordinatesToGridPoint2(movableGraphic.getDrawable().getDestinationCoordinates().get(0)),
                 movableGraphic.getDrawable().getMovementProgress()
             );
         }

@@ -9,6 +9,7 @@ import ru.mipt.bit.platformer.level.generator.provider.TankProvider;
 import ru.mipt.bit.platformer.model.GameObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public enum SaveFileGameObject {
@@ -47,7 +48,7 @@ public enum SaveFileGameObject {
         return gameObjectProvider != null;
     }
 
-    public GameObject provideObject(Coordinates coordinates) {
+    public GameObject provideObject(List<Coordinates> coordinates) {
         return gameObjectProvider.provideObject(coordinates);
     }
 

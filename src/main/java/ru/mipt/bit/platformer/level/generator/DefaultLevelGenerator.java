@@ -9,20 +9,22 @@ import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.model.Obstacle;
 import ru.mipt.bit.platformer.model.Tank;
 
+import java.util.List;
+
 public class DefaultLevelGenerator implements LevelGenerator {
     @Override
     public LevelInfo generate() {
-        GameLevel gameLevel = new GameLevel();
+        GameLevel gameLevel = new GameLevel(0, 9, 0, 7);
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
 
-        Tank playerTank = new Tank(new Coordinates(1, 1), Direction.RIGHT, 0.4f);
+        Tank playerTank = new Tank(List.of(new Coordinates(1, 1)), Direction.RIGHT, 0.4f);
         gameLevel.add(playerTank);
         gameGraphics.addGameObject(playerTank, "images/tank_blue.png");
         actionGenerator.add(playerTank, new DefaultKeyboardInputController());
 
-        Obstacle tree = new Obstacle(new Coordinates(1, 3));
+        Obstacle tree = new Obstacle(List.of(new Coordinates(1, 3)));
         gameLevel.add(tree);
         gameGraphics.addGameObject(tree, "images/greenTree.png");
         gameGraphics.moveRectanglesAtTileCenters();

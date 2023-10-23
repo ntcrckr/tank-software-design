@@ -9,6 +9,7 @@ import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.level.GameLevel;
 
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
@@ -16,7 +17,7 @@ class GameLevelTest {
 
     @Test
     void testGameObjectsUpdateStateOnUpdateState() {
-        GameLevel gameLevel = new GameLevel();
+        GameLevel gameLevel = new GameLevel(0, 9, 0, 7);
         Tank mockTank = Mockito.mock(Tank.class);
         gameLevel.add(mockTank);
         Obstacle mockObstacle = Mockito.mock(Obstacle.class);
@@ -29,11 +30,11 @@ class GameLevelTest {
 
     @Test
     void testTankNotMovingOnCollision() {
-        GameLevel gameLevel = new GameLevel();
-        Tank tank = new Tank(new Coordinates(0, 0), Direction.RIGHT, 1f);
-        Coordinates initialCoordinates = tank.getCoordinates();
+        GameLevel gameLevel = new GameLevel(0, 9, 0, 7);
+        Tank tank = new Tank(List.of(new Coordinates(0, 0)), Direction.RIGHT, 1f);
+        List<Coordinates> initialCoordinates = tank.getCoordinates();
         gameLevel.add(tank);
-        Obstacle obstacle = new Obstacle(new Coordinates(0, 1));
+        Obstacle obstacle = new Obstacle(List.of(new Coordinates(0, 1)));
         gameLevel.add(obstacle);
         Map<Movable, MoveAction> actionMap = new HashMap<>();
         actionMap.put(tank, MoveAction.UP);
@@ -44,11 +45,11 @@ class GameLevelTest {
 
     @Test
     void testTankMovingOnCollision() {
-        GameLevel gameLevel = new GameLevel();
-        Tank tank = new Tank(new Coordinates(0, 0), Direction.RIGHT, 1f);
-        Coordinates initialCoordinates = tank.getCoordinates();
+        GameLevel gameLevel = new GameLevel(0, 9, 0, 7);
+        Tank tank = new Tank(List.of(new Coordinates(0, 0)), Direction.RIGHT, 1f);
+        List<Coordinates> initialCoordinates = tank.getCoordinates();
         gameLevel.add(tank);
-        Obstacle obstacle = new Obstacle(new Coordinates(2, 2));
+        Obstacle obstacle = new Obstacle(List.of(new Coordinates(2, 2)));
         gameLevel.add(obstacle);
         Map<Movable, MoveAction> actionMap = new HashMap<>();
         MoveAction moveAction = MoveAction.UP;
