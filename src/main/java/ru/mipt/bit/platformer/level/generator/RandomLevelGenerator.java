@@ -9,6 +9,7 @@ import ru.mipt.bit.platformer.model.Obstacle;
 import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.util.RandomCoordinatesGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -36,13 +37,13 @@ public class RandomLevelGenerator implements LevelGenerator {
         ActionGenerator actionGenerator = new ActionGenerator();
 
         RandomCoordinatesGenerator coordinatesGenerator = new RandomCoordinatesGenerator(minX, maxX, minY, maxY);
-        Tank playerTank = new Tank(List.of(coordinatesGenerator.getCoordinates()), Direction.RIGHT, 0.4f);
+        Tank playerTank = new Tank(new ArrayList<>(List.of(coordinatesGenerator.getCoordinates())), Direction.RIGHT, 0.4f);
         gameLevel.add(playerTank);
         gameGraphics.addGameObject(playerTank, "images/tank_blue.png");
         actionGenerator.add(playerTank, new DefaultKeyboardInputController());
 
         for (int i = 0; i < treesAmount; i++) {
-            Obstacle tree = new Obstacle(List.of(coordinatesGenerator.getCoordinates()));
+            Obstacle tree = new Obstacle(new ArrayList<>(List.of(coordinatesGenerator.getCoordinates())));
             gameLevel.add(tree);
             gameGraphics.addGameObject(tree, "images/greenTree.png");
         }

@@ -41,6 +41,7 @@ public class Tank implements GameObject, Movable {
     @Override
     public void startMovement(Direction direction) {
         destinationCoordinates = direction.apply(coordinates);
+        coordinates.addAll(destinationCoordinates);
         movementProgress = 0f;
         changeDirection(direction);
     }
@@ -73,6 +74,7 @@ public class Tank implements GameObject, Movable {
         direction = newDirection;
     }
 
+//    TODO: remove apply & afterAction
     @Override
     public void apply(MoveAction moveAction) {
         startMovement(moveAction.getDirection());
@@ -92,11 +94,11 @@ public class Tank implements GameObject, Movable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tank tank = (Tank) o;
-        return Objects.equals(uid, tank.uid);
+        return uid == tank.uid && Float.compare(movementProgress, tank.movementProgress) == 0 && Float.compare(movementSpeed, tank.movementSpeed) == 0 && Objects.equals(coordinates, tank.coordinates) && Objects.equals(destinationCoordinates, tank.destinationCoordinates) && direction == tank.direction;
     }
 
     @Override
     public int hashCode() {
-        return uid;
+        return Objects.hash(uid, coordinates, destinationCoordinates, movementProgress, direction, movementSpeed);
     }
 }

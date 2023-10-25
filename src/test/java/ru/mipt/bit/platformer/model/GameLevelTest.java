@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.mockito.Mockito;
+import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
@@ -36,7 +37,7 @@ class GameLevelTest {
         gameLevel.add(tank);
         Obstacle obstacle = new Obstacle(List.of(new Coordinates(0, 1)));
         gameLevel.add(obstacle);
-        Map<Movable, MoveAction> actionMap = new HashMap<>();
+        Map<GameObject, Action> actionMap = new HashMap<>();
         actionMap.put(tank, MoveAction.UP);
         gameLevel.applyActions(actionMap);
         assertFalse(tank.isMoving());
@@ -51,7 +52,7 @@ class GameLevelTest {
         gameLevel.add(tank);
         Obstacle obstacle = new Obstacle(List.of(new Coordinates(2, 2)));
         gameLevel.add(obstacle);
-        Map<Movable, MoveAction> actionMap = new HashMap<>();
+        Map<GameObject, Action> actionMap = new HashMap<>();
         MoveAction moveAction = MoveAction.UP;
         actionMap.put(tank, moveAction);
         gameLevel.applyActions(actionMap);

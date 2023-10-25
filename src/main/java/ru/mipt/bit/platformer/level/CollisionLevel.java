@@ -4,17 +4,14 @@ import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CollisionLevel {
     private final int minX;
     private final int maxX;
     private final int minY;
     private final int maxY;
-    private final Map<Coordinates, GameObject> occupyCoordinatesLookup = new HashMap<>();
-    private final Map<GameObject, List<Coordinates>> occupyGameObjectLookup = new HashMap<>();
+    private final Set<GameObject> gameObjects = new HashSet<>();
 
     public CollisionLevel(int startX, int endX, int startY, int endY) {
         this.minX = startX;
@@ -23,27 +20,12 @@ public class CollisionLevel {
         this.maxY = endY;
     }
 
-    private void put(GameObject gameObject, List<Coordinates> coordinatesList) {
-        for (Coordinates coordinates : coordinatesList) {
-            occupyCoordinatesLookup.put(coordinates, gameObject);
-        }
-        occupyGameObjectLookup.put(gameObject, coordinatesList);
-    }
-
     public void add(GameObject gameObject) {
-        put(gameObject, gameObject.getCoordinates());
+        gameObjects.add(gameObject);
     }
 
     public void remove(GameObject gameObject) {
-        for (Coordinates coordinates : occupyGameObjectLookup.get(gameObject)) {
-            occupyCoordinatesLookup.remove(coordinates);
-        }
-        occupyGameObjectLookup.remove(gameObject);
-    }
-
-    public void update(GameObject gameObject, List<Coordinates> coordinatesList) {
-        remove(gameObject);
-        put(gameObject, coordinatesList);
+        gameObjects.remove(gameObject);
     }
 
     private boolean isWithinBounds(Coordinates coordinates) {
@@ -52,8 +34,15 @@ public class CollisionLevel {
         return (x >= minX) && (x <= maxX) && (y >= minY) && (y <= maxY);
     }
 
+    private boolean isCoordinatesFree(Coordinates coordinates) {
+        for (GameObject gameObject : gameObjects) {
+            if (gameObject.getCoordinates().contains(coordinates)) return false;
+        }
+        return true;
+    }
+
     public boolean isNotGoingToCollide(Coordinates coordinates) {
-        boolean isFree = occupyCoordinatesLookup.get(coordinates) == null;
+        boolean isFree = isCoordinatesFree(coordinates);
         boolean isWithinBounds = isWithinBounds(coordinates);
         return isFree && isWithinBounds;
     }
