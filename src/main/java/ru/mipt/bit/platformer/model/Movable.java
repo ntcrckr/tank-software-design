@@ -18,9 +18,5 @@ public interface Movable extends GameObject {
 
     void changeDirection(Direction direction);
 
-    void apply(MoveAction moveAction);
-
-    Movable afterAction(MoveAction moveAction);
-
     void updateState(float deltaTime);
 }

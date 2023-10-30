@@ -2,7 +2,6 @@ package ru.mipt.bit.platformer.level;
 
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.model.GameObject;
-import ru.mipt.bit.platformer.model.Movable;
 
 import java.util.*;
 

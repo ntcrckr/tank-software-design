@@ -74,21 +74,6 @@ public class Tank implements GameObject, Movable {
         direction = newDirection;
     }
 
-//    TODO: remove apply & afterAction
-    @Override
-    public void apply(MoveAction moveAction) {
-        startMovement(moveAction.getDirection());
-    }
-
-    @Override
-    public Movable afterAction(MoveAction moveAction) {
-        if (isMoving()) {
-            return this;
-        }
-        changeDirection(moveAction.getDirection());
-        return new Tank(moveAction.getDirection().apply(coordinates), direction, movementSpeed);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
