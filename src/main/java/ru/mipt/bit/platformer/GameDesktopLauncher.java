@@ -30,7 +30,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void create() {
         LevelGenerator levelGenerator = switch (GameMode.getGameMode()) {
             case DEFAULT -> new DefaultLevelGenerator();
-            case RANDOM -> new RandomLevelGenerator(10, 8, 10);
+            case RANDOM -> new RandomLevelGenerator(10, 8, 10, 2);
             case FROM_FILE -> new SaveFileLevelGenerator("src/main/resources/level.txt");
         };
         List<LevelListener> levelListeners = new ArrayList<>();
