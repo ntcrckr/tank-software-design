@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.level.generator.impl;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
+import ru.mipt.bit.platformer.controller.artificial.AIController;
 import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
@@ -31,6 +32,11 @@ public class DefaultLevelGenerator implements LevelGenerator {
         gameLevel.add(tree);
         gameGraphics.addGameObject(tree, "images/greenTree.png");
         gameGraphics.moveRectanglesAtTileCenters();
+
+        Tank enemy = new Tank(new Coordinates(4, 4), Direction.DOWN, 0.6f);
+        gameLevel.add(enemy);
+        gameGraphics.addGameObject(enemy, "images/tank_red.png");
+        actionGenerator.add(enemy, new AIController());
 
         return new LevelInfo(gameLevel, gameGraphics, actionGenerator);
     }

@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.level.generator.impl;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
+import ru.mipt.bit.platformer.controller.artificial.AIController;
 import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
@@ -21,11 +22,13 @@ public class RandomLevelGenerator implements LevelGenerator {
     private final int width;
     private final int height;
     private final int treesAmount;
+    private final int enemiesAmount;
 
-    public RandomLevelGenerator(int width, int height, int treesAmount) {
+    public RandomLevelGenerator(int width, int height, int treesAmount, int enemiesAmount) {
         this.width = width;
         this.height = height;
         this.treesAmount = treesAmount;
+        this.enemiesAmount = enemiesAmount;
     }
 
     @Override
@@ -45,6 +48,13 @@ public class RandomLevelGenerator implements LevelGenerator {
             Obstacle tree = new Obstacle(coordinatesGenerator.getCoordinates());
             gameLevel.add(tree);
             gameGraphics.addGameObject(tree, "images/greenTree.png");
+        }
+
+        for (int i = 0; i < enemiesAmount; i++) {
+            Tank tank = new Tank(coordinatesGenerator.getCoordinates(), Direction.DOWN, 0.6f);
+            gameLevel.add(tank);
+            gameGraphics.addGameObject(tank, "images/tank_red.png");
+            actionGenerator.add(tank, new AIController());
         }
 
         gameGraphics.moveRectanglesAtTileCenters();
