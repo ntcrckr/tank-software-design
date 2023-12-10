@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
+import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
@@ -41,6 +42,7 @@ public class Tank implements GameObject, Movable {
         changeDirection(direction);
     }
 
+    @Override
     public Coordinates getDestinationCoordinates() {
         return destinationCoordinates;
     }
@@ -67,12 +69,14 @@ public class Tank implements GameObject, Movable {
     }
 
     @Override
-    public void apply(MoveAction moveAction) {
-        startMovement(moveAction.getDirection());
+    public void apply(Action action) {
+        if (action instanceof MoveAction moveAction && !isMoving()) {
+            startMovement(moveAction.getDirection());
+        }
     }
 
     @Override
-    public Movable afterAction(MoveAction moveAction) {
+    public Movable afterApply(MoveAction moveAction) {
         if (isMoving()) {
             return this;
         }

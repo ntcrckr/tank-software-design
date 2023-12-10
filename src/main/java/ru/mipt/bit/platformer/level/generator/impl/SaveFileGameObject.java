@@ -1,8 +1,8 @@
-package ru.mipt.bit.platformer.level.generator;
+package ru.mipt.bit.platformer.level.generator.impl;
 
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.controller.Controller;
-import ru.mipt.bit.platformer.controller.input.DefaultKeyboardInputController;
+import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.level.generator.provider.GameObjectProvider;
 import ru.mipt.bit.platformer.level.generator.provider.ObstacleProvider;
 import ru.mipt.bit.platformer.level.generator.provider.TankProvider;
@@ -14,7 +14,7 @@ import java.util.Map;
 public enum SaveFileGameObject {
     EMPTY('_', null, null),
     TREE('T', new ObstacleProvider("images/greenTree.png"), null),
-    PLAYER('X', new TankProvider("images/tank_blue.png"), new DefaultKeyboardInputController());
+    PLAYER('X', new TankProvider("images/tank_blue.png"), InputControllerProvider.getKeyboardDefault());
 
     private final Character notation;
     private final GameObjectProvider gameObjectProvider;

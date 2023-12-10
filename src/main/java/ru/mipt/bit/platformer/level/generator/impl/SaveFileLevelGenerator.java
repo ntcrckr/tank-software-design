@@ -1,9 +1,12 @@
-package ru.mipt.bit.platformer.level.generator;
+package ru.mipt.bit.platformer.level.generator.impl;
 
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
+import ru.mipt.bit.platformer.level.LevelListener;
+import ru.mipt.bit.platformer.level.generator.LevelGenerator;
+import ru.mipt.bit.platformer.level.generator.LevelInfo;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 
@@ -11,6 +14,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
@@ -23,8 +28,8 @@ public class SaveFileLevelGenerator implements LevelGenerator {
     }
 
     @Override
-    public LevelInfo generate() {
-        GameLevel gameLevel = new GameLevel();
+    public LevelInfo generate(List<LevelListener> levelListeners) {
+        List<GameObject> gameObjects = new ArrayList<>();
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
@@ -42,7 +47,9 @@ public class SaveFileLevelGenerator implements LevelGenerator {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        int y = (int) fileStream.count() - 1;
+        int height = (int) fileStream.count() - 1;
+        int width = 0;
+        int y = height;
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -56,19 +63,21 @@ public class SaveFileLevelGenerator implements LevelGenerator {
                     GameObject gameObject = saveFileGameObject.provideObject(coordinates);
                     String texturePath = saveFileGameObject.provideTexturePath();
 
-                    gameLevel.add(gameObject);
+                    gameObjects.add(gameObject);
                     gameGraphics.addGameObject(gameObject, texturePath);
 
                     if (saveFileGameObject.isControllable()) {
                         actionGenerator.add((Movable) gameObject, saveFileGameObject.getController());
                     }
                 }
+                width = Math.max(width, x);
             }
             y -= 1;
         }
         scanner.close();
         gameGraphics.moveRectanglesAtTileCenters();
 
+        GameLevel gameLevel = new GameLevel(new Coordinates(width, height), levelListeners);
         return new LevelInfo(gameLevel, gameGraphics, actionGenerator);
     }
 }

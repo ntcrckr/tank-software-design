@@ -4,15 +4,20 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
+import ru.mipt.bit.platformer.level.CollisionLevel;
 import ru.mipt.bit.platformer.level.GameLevel;
+import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.*;
+import ru.mipt.bit.platformer.level.generator.impl.DefaultLevelGenerator;
+import ru.mipt.bit.platformer.level.generator.impl.RandomLevelGenerator;
+import ru.mipt.bit.platformer.level.generator.impl.SaveFileLevelGenerator;
 import ru.mipt.bit.platformer.model.*;
+import ru.mipt.bit.platformer.util.GameMode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class GameDesktopLauncher implements ApplicationListener {
@@ -23,22 +28,13 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void create() {
-        File file = new File("src/main/resources/mode");
-        Scanner scanner;
-        try {
-            scanner = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-        int mode = scanner.nextInt();
-        scanner.close();
-        LevelGenerator levelGenerator = switch (mode) {
-            case 1 -> new DefaultLevelGenerator();
-            case 2 -> new RandomLevelGenerator(10, 8, 10);
-            case 3 -> new SaveFileLevelGenerator("src/main/resources/level.txt");
-            default -> throw new RuntimeException();
+        LevelGenerator levelGenerator = switch (GameMode.getGameMode()) {
+            case DEFAULT -> new DefaultLevelGenerator();
+            case RANDOM -> new RandomLevelGenerator(10, 8, 10);
+            case FROM_FILE -> new SaveFileLevelGenerator("src/main/resources/level.txt");
         };
-        LevelInfo levelInfo = levelGenerator.generate();
+        List<LevelListener> levelListeners = new ArrayList<>();
+        LevelInfo levelInfo = levelGenerator.generate(levelListeners);
         gameLevel = levelInfo.getGameLevel();
         gameGraphics = levelInfo.getGameGraphics();
         actionGenerator = levelInfo.getActionGenerator();
@@ -50,7 +46,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Map<Movable, MoveAction> actionMap = actionGenerator.generateActions();
+        Map<GameObject, Action> actionMap = actionGenerator.generateActions();
 
         gameLevel.applyActions(actionMap);
 

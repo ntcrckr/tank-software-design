@@ -1,6 +1,8 @@
 package ru.mipt.bit.platformer.level;
 
+import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 
@@ -10,34 +12,37 @@ import java.util.Map;
 
 public class GameLevel {
     private final List<GameObject> gameObjects = new ArrayList<>();
+    private final CollisionLevel collisionLevel;
+    private final List<LevelListener> levelListeners;
+
+    public GameLevel(Coordinates size, List<LevelListener> levelListeners) {
+        this.collisionLevel = new CollisionLevel(size.getX(), size.getY());
+        levelListeners.add(collisionLevel);
+        this.levelListeners = levelListeners;
+    }
 
     public void add(GameObject gameObject) {
+        levelListeners.forEach(ll -> ll.onAdd(gameObject));
         gameObjects.add(gameObject);
     }
 
-    public void applyActions(Map<Movable, MoveAction> actionMap) {
-        for (Map.Entry<Movable, MoveAction> entry : actionMap.entrySet()) {
-            Movable movable = entry.getKey();
-            MoveAction action = entry.getValue();
-            if (action == null) continue;
-            Movable futureMovable = movable.afterAction(action);
-            if (futureMovable.equals(movable)) {
-                continue;
-            }
-            if (!goingToCollide(movable, futureMovable)) {
-                movable.apply(action);
-            }
-        }
+    public void remove(GameObject gameObject) {
+        levelListeners.forEach(ll -> ll.onRemove(gameObject));
+        gameObjects.remove(gameObject);
     }
 
-    private boolean goingToCollide(Movable initialMovable, Movable futureMovable) {
-        for (GameObject gameObject : gameObjects) {
-            if (initialMovable.equals(gameObject)) continue;
-            if (futureMovable.getCoordinates().equals(gameObject.getCoordinates())) {
-                return true;
+    public void applyActions(Map<GameObject, Action> actionMap) {
+        for (Map.Entry<GameObject, Action> entry : actionMap.entrySet()) {
+            GameObject gameObject = entry.getKey();
+            Action action = entry.getValue();
+
+            if (action == null) continue;
+            if (gameObject instanceof Movable movable && action instanceof MoveAction moveAction){
+                if (!collisionLevel.isGoingToCollide(movable, moveAction)) {
+                    movable.apply(moveAction);
+                }
             }
         }
-        return false;
     }
 
     public void updateState(float deltaTime) {

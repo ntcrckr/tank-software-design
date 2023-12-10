@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.model;
 
+import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 
@@ -16,6 +17,11 @@ public class Obstacle implements GameObject {
         return coordinates;
     }
 
+    @Override
+    public Coordinates getDestinationCoordinates() {
+        return coordinates;
+    }
+
     public float getRotation() {
         return direction.getRotation();
     }
@@ -24,4 +30,7 @@ public class Obstacle implements GameObject {
     public void updateState(float deltaTime) {
         // does nothing for now
     }
+
+    @Override
+    public void apply(Action action) {}
 }
