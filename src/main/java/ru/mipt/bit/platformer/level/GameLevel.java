@@ -14,9 +14,13 @@ public class GameLevel {
     private final List<GameObject> gameObjects = new ArrayList<>();
     private final CollisionLevel collisionLevel;
     private final List<LevelListener> levelListeners;
+    private final Coordinates size;
+    private final GameObject player;
 
-    public GameLevel(Coordinates size, List<LevelListener> levelListeners) {
+    public GameLevel(Coordinates size, List<LevelListener> levelListeners, GameObject player) {
+        this.size = size;
         this.collisionLevel = new CollisionLevel(size.getX(), size.getY());
+        this.player = player;
         levelListeners.add(collisionLevel);
         this.levelListeners = levelListeners;
     }
@@ -48,6 +52,24 @@ public class GameLevel {
     public void updateState(float deltaTime) {
         for (GameObject gameObject : gameObjects) {
             gameObject.updateState(deltaTime);
+        }
+    }
+
+    public Coordinates getSize() {
+        return size;
+    }
+
+    public GameObject getPlayer() {
+        return player;
+    }
+
+    public Adapter getAdapter() {
+        return new Adapter();
+    }
+
+    public class Adapter {
+        public List<GameObject> getGameObjects() {
+            return gameObjects;
         }
     }
 }

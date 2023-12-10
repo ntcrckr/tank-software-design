@@ -2,9 +2,9 @@ package ru.mipt.bit.platformer.actions;
 
 import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.model.GameObject;
-import ru.mipt.bit.platformer.model.Movable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ActionGenerator {
@@ -21,5 +21,17 @@ public class ActionGenerator {
             actionMap.put(entry.getKey(), action);
         }
         return actionMap;
+    }
+
+    public Adapter getAdapter() {
+        return new Adapter();
+    }
+
+    public class Adapter {
+        public List<GameObject> getEnemies(GameObject player) {
+            return controllerTypeMap.keySet().stream()
+                    .filter(go -> go != player)
+                    .toList();
+        }
     }
 }

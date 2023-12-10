@@ -16,9 +16,9 @@ application {
     }
 }
 
-repositories {
-    mavenCentral()
-}
+//repositories {
+//    mavenCentral()
+//}
 
 test {
     useJUnitPlatform()
@@ -30,4 +30,5 @@ dependencies {
     implementation deps.gdx.platform_desktop
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     implementation 'org.mockito:mockito-all:1.10.19'
+    implementation 'com.github.a-ivanov:tank-software-design-ai:v1.0.1'
 }
