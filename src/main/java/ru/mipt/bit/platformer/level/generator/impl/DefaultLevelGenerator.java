@@ -18,7 +18,7 @@ import java.util.List;
 public class DefaultLevelGenerator implements LevelGenerator {
     @Override
     public LevelInfo generate(List<LevelListener> levelListeners) {
-        GameLevel gameLevel = new GameLevel(new Coordinates(8, 10),levelListeners);
+        GameLevel gameLevel = new GameLevel(new Coordinates(10, 8),levelListeners);
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
