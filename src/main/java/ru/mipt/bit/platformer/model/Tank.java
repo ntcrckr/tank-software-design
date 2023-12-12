@@ -10,7 +10,7 @@ import java.util.Objects;
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class Tank implements GameObject, Movable {
+public class Tank implements Movable, Shooter {
     private Coordinates coordinates;
     private Coordinates destinationCoordinates;
     private float movementProgress;
@@ -96,5 +96,10 @@ public class Tank implements GameObject, Movable {
     @Override
     public int hashCode() {
         return Objects.hash(coordinates, destinationCoordinates, movementProgress, direction, movementSpeed);
+    }
+
+    @Override
+    public void shoot() {
+
     }
 }

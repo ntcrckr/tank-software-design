@@ -2,9 +2,11 @@ package ru.mipt.bit.platformer.level;
 
 import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
+import ru.mipt.bit.platformer.model.Shooter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,9 @@ public class GameLevel {
                 if (!collisionLevel.isGoingToCollide(movable, moveAction)) {
                     movable.apply(moveAction);
                 }
+            }
+            if (gameObject instanceof Shooter shooter && action instanceof ShootAction shootAction){
+                shooter.apply(shootAction);
             }
         }
     }

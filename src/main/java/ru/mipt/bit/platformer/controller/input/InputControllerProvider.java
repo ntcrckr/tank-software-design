@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.controller.input;
 
 import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.controller.Controller;
 
 import static com.badlogic.gdx.Input.Keys.*;
@@ -17,6 +18,7 @@ public class InputControllerProvider {
         inputController.addMapping(S, MoveAction.DOWN);
         inputController.addMapping(RIGHT, MoveAction.RIGHT);
         inputController.addMapping(D, MoveAction.RIGHT);
+        inputController.addMapping(SPACE, new ShootAction());
         return inputController;
     }
 }
