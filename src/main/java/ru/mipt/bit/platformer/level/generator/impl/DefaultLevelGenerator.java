@@ -3,7 +3,6 @@ package ru.mipt.bit.platformer.level.generator.impl;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
-import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
 import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
@@ -21,7 +20,7 @@ public class DefaultLevelGenerator implements LevelGenerator {
     public LevelInfo generate(List<LevelListener> levelListeners) {
         Tank playerTank = new Tank(new Coordinates(1, 1), Direction.RIGHT, 0.4f);
 
-        GameLevel gameLevel = new GameLevel(new Coordinates(8, 10),levelListeners, playerTank);
+        GameLevel gameLevel = new GameLevel(new Coordinates(10, 8),levelListeners, playerTank);
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
