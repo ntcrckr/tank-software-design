@@ -6,7 +6,8 @@ public enum MoveAction implements Action {
     RIGHT(Direction.RIGHT),
     UP(Direction.UP),
     LEFT(Direction.LEFT),
-    DOWN(Direction.DOWN);
+    DOWN(Direction.DOWN),
+    STOP(null);
 
     private final Direction direction;
 
@@ -16,5 +17,12 @@ public enum MoveAction implements Action {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    @Override
+    public String toString() {
+        return "MoveAction{" +
+                "direction=" + direction +
+                '}';
     }
 }

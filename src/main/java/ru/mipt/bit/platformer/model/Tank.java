@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.model;
 
 import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 
@@ -71,9 +72,21 @@ public class Tank implements Movable, Shooter {
 
     @Override
     public void apply(Action action) {
-        if (action instanceof MoveAction moveAction && !isMoving()) {
-            startMovement(moveAction.getDirection());
+        if (action instanceof MoveAction moveAction) {
+            if (moveAction == MoveAction.STOP) {
+                stopMovement();
+            } else if (!isMoving()) {
+                startMovement(moveAction.getDirection());
+            }
         }
+        if (action instanceof ShootAction shootAction) {
+            shoot();
+        }
+    }
+
+    private void stopMovement() {
+        destinationCoordinates = coordinates;
+        movementProgress = 1f;
     }
 
     @Override
@@ -100,6 +113,6 @@ public class Tank implements Movable, Shooter {
 
     @Override
     public void shoot() {
-
+        System.out.println("Shoot!");
     }
 }

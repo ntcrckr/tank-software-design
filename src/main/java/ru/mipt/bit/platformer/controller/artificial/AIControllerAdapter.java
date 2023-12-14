@@ -11,6 +11,7 @@ import org.awesome.ai.strategy.NotRecommendingAI;
 import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.level.GameLevel;
@@ -95,7 +96,7 @@ public class AIControllerAdapter {
                     .filter(r -> r.getActor().getSource() == gameObject)
                     .findFirst()
                     .map(r -> switch (r.getAction()) {
-                        case Shoot -> null;
+                        case Shoot -> new ShootAction();
                         case MoveNorth -> MoveAction.UP;
                         case MoveEast -> MoveAction.RIGHT;
                         case MoveSouth -> MoveAction.DOWN;

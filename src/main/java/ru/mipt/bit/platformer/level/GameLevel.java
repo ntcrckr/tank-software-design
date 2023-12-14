@@ -42,14 +42,9 @@ public class GameLevel {
             GameObject gameObject = entry.getKey();
             Action action = entry.getValue();
 
-            if (action == null) continue;
-            if (gameObject instanceof Movable movable && action instanceof MoveAction moveAction){
-                if (!collisionLevel.isGoingToCollide(movable, moveAction)) {
-                    movable.apply(moveAction);
-                }
-            }
-            if (gameObject instanceof Shooter shooter && action instanceof ShootAction shootAction){
-                shooter.apply(shootAction);
+            gameObject.apply(action);
+            if (collisionLevel.isGoingToCollide(gameObject)) {
+                gameObject.apply(MoveAction.STOP);
             }
         }
     }

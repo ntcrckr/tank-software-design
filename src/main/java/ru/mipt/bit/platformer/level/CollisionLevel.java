@@ -27,8 +27,9 @@ public class CollisionLevel implements LevelListener {
         gameObjects.remove(gameObject);
     }
 
-    public boolean isGoingToCollide(Movable gameObject, MoveAction moveAction) {
-        Coordinates destinationCoordinates = gameObject.afterApply(moveAction).getDestinationCoordinates();
+    public boolean isGoingToCollide(GameObject gameObject) {
+        if (!(gameObject instanceof Movable)) return false;
+        Coordinates destinationCoordinates = gameObject.getDestinationCoordinates();
         for (GameObject otherGameObject : gameObjects) {
             if (gameObject == otherGameObject) continue;
             Coordinates otherCoordinates = otherGameObject.getCoordinates();

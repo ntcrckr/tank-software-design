@@ -24,7 +24,7 @@ class TankTest {
     void testTankChangeDirectionOnMovement(Direction direction) {
         Tank tank = new Tank(new Coordinates(0, 0), Direction.RIGHT, 1f);
         tank.startMovement(direction);
-        float tankRotation = tank.getDirection();
+        float tankRotation = tank.getDirection().getRotation();
         float tankExpectedRotation = direction.getRotation();
         assertEquals(tankRotation, tankExpectedRotation);
     }
