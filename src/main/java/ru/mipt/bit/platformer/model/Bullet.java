@@ -1,0 +1,27 @@
+package ru.mipt.bit.platformer.model;
+
+import ru.mipt.bit.platformer.actions.Action;
+import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.basics.Direction;
+
+public class Bullet implements GameObject {  // TODO:
+    @Override
+    public Action apply(Action action) {
+        return null;
+    }
+
+    @Override
+    public void updateState(float deltaTime) {
+
+    }
+
+    @Override
+    public Coordinates getCoordinates() {
+        return null;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return null;
+    }
+}

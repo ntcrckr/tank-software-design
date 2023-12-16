@@ -40,13 +40,14 @@ public class SimpleMovable implements Movable {
     }
 
     @Override
-    public void apply(Action action) {
+    public Action apply(Action action) {
         MoveAction moveAction = (MoveAction) action;
         if (moveAction == MoveAction.STOP) {
             stopMovement();
         } else if (!isMoving()) {
             startMovement(moveAction.getDirection());
         }
+        return null;
     }
 
     @Override

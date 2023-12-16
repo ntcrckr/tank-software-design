@@ -1,6 +1,8 @@
 package ru.mipt.bit.platformer.model.impl;
 
 import ru.mipt.bit.platformer.actions.Action;
+import ru.mipt.bit.platformer.actions.CreateAction;
+import ru.mipt.bit.platformer.model.Bullet;
 import ru.mipt.bit.platformer.model.Shooter;
 
 public class SimpleShooter implements Shooter {
@@ -8,18 +10,20 @@ public class SimpleShooter implements Shooter {
     private final float reloadTime;
     private float currentReloadTime = noReloadTime;
     private boolean didShoot = false;
+    private final Bullet bullet = new Bullet();
 
     public SimpleShooter(float reloadTime) {
         this.reloadTime = reloadTime;
     }
 
     @Override
-    public void apply(Action action) {
+    public Action apply(Action action) {
         if (canShoot()) {
             currentReloadTime = reloadTime;
             didShoot = true;
             System.out.println("pew");
         }
+        return new CreateAction(bullet);
     }
 
     @Override

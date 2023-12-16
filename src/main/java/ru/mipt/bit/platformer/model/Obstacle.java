@@ -28,5 +28,7 @@ public class Obstacle implements GameObject {
     }
 
     @Override
-    public void apply(Action action) {}
+    public Action apply(Action action) {
+        return null;
+    }
 }

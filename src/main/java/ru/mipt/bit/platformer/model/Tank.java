@@ -16,12 +16,13 @@ public class Tank implements Movable, Shooter {
     }
 
     @Override
-    public void apply(Action action) {
+    public Action apply(Action action) {
         if (action instanceof MoveAction moveAction) {
-            movable.apply(moveAction);
-        }
-        if (action instanceof ShootAction shootAction) {
-            shooter.apply(shootAction);
+            return movable.apply(moveAction);
+        } else if (action instanceof ShootAction shootAction) {
+            return shooter.apply(shootAction);
+        } else {
+            return null;
         }
     }
 

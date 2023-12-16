@@ -1,7 +1,9 @@
 package ru.mipt.bit.platformer.level;
 
 import ru.mipt.bit.platformer.actions.Action;
+import ru.mipt.bit.platformer.actions.CreateAction;
 import ru.mipt.bit.platformer.actions.MoveAction;
+import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
@@ -40,7 +42,10 @@ public class GameLevel {
             GameObject gameObject = entry.getKey();
             Action action = entry.getValue();
 
-            gameObject.apply(action);
+            Action responseAction = gameObject.apply(action);
+            if (responseAction instanceof CreateAction createAction) {
+                add(createAction.getGameObject());
+            }
 
             if (gameObject instanceof Movable movable) {
                 if (collisionLevel.isGoingToCollide(movable)) {
