@@ -16,8 +16,8 @@ import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.model.GameObject;
+import ru.mipt.bit.platformer.model.Movable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AIControllerAdapter {
@@ -32,8 +32,8 @@ public class AIControllerAdapter {
 
     public GameState getGameState() {
         List<Obstacle> obstacles = getObstacles();
-        List<Bot> bots = new ArrayList<>();
-        Player player = null;
+        List<Bot> bots = getBots(); // TODO: move this fix to prev commit
+        Player player = null;  // TODO: add player
         return new GameState.GameStateBuilder()
                 .obstacles(obstacles)
                 .bots(bots)
@@ -44,7 +44,7 @@ public class AIControllerAdapter {
     }
 
     private List<Obstacle> getObstacles() {
-        List<GameObject> enemies = actionGenerator.getAdapter().getEnemies(gameLevel.getPlayer());
+        List<Movable> enemies = actionGenerator.getAdapter().getEnemies(gameLevel.getPlayer());
         List<GameObject> obstacles = gameLevel.getAdapter().getGameObjects().stream()
                 .filter(go -> go != gameLevel.getPlayer())
                 .filter(enemies::contains)
@@ -55,7 +55,7 @@ public class AIControllerAdapter {
     }
 
     private List<Bot> getBots() {
-        List<GameObject> enemies = actionGenerator.getAdapter().getEnemies(gameLevel.getPlayer());
+        List<Movable> enemies = actionGenerator.getAdapter().getEnemies(gameLevel.getPlayer());
         return enemies.stream()
                 .map(go -> new Bot.BotBuilder()
                         .source(go)

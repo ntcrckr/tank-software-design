@@ -18,11 +18,6 @@ public class Obstacle implements GameObject {
     }
 
     @Override
-    public Coordinates getDestinationCoordinates() {
-        return coordinates;
-    }
-
-    @Override
     public Direction getDirection() {
         return direction;
     }

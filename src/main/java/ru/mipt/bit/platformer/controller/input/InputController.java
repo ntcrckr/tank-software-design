@@ -2,7 +2,6 @@ package ru.mipt.bit.platformer.controller.input;
 
 import com.badlogic.gdx.Gdx;
 import ru.mipt.bit.platformer.actions.Action;
-import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.controller.Controller;
 
 import java.util.HashMap;
@@ -11,7 +10,8 @@ import java.util.Map;
 public class InputController implements Controller {
     private final Map<Integer, Action> keyToActionMap = new HashMap<>();
 
-    public InputController() {}
+    public InputController() {
+    }
 
     public void addMapping(Integer key, Action action) {
         keyToActionMap.put(key, action);

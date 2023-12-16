@@ -6,113 +6,58 @@ import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 
-import java.util.Objects;
-
-import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
-
 public class Tank implements Movable, Shooter {
-    private Coordinates coordinates;
-    private Coordinates destinationCoordinates;
-    private float movementProgress;
-    private Direction direction;
-    private final float movementSpeed;
+    private final Movable movable;
+    private final Shooter shooter;
 
-    public Tank(Coordinates coordinates, Direction direction, float movementSpeed) {
-        this.coordinates = coordinates;
-        this.destinationCoordinates = coordinates;
-        this.movementProgress = 1f;
-        this.direction = direction;
-        this.movementSpeed = movementSpeed;
-    }
-
-    @Override
-    public boolean isMoving() {
-        return !isEqual(movementProgress, 1f);
-    }
-
-
-    public Coordinates getCoordinates() {
-        return coordinates;
-    }
-
-    @Override
-    public void startMovement(Direction direction) {
-        destinationCoordinates = direction.apply(coordinates);
-        movementProgress = 0f;
-        changeDirection(direction);
-    }
-
-    @Override
-    public Coordinates getDestinationCoordinates() {
-        return destinationCoordinates;
-    }
-
-    public float getMovementProgress() {
-        return movementProgress;
-    }
-
-    @Override
-    public void updateState(float deltaTime) {
-        movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
-        if (isEqual(movementProgress, 1f)) {
-            coordinates = destinationCoordinates;
-        }
-    }
-
-    @Override
-    public Direction getDirection() {
-        return direction;
-    }
-
-    @Override
-    public void changeDirection(Direction newDirection) {
-        direction = newDirection;
+    public Tank(Movable movable, Shooter shooter) {
+        this.movable = movable;
+        this.shooter = shooter;
     }
 
     @Override
     public void apply(Action action) {
         if (action instanceof MoveAction moveAction) {
-            if (moveAction == MoveAction.STOP) {
-                stopMovement();
-            } else if (!isMoving()) {
-                startMovement(moveAction.getDirection());
-            }
+            movable.apply(moveAction);
         }
         if (action instanceof ShootAction shootAction) {
-            shoot();
+            shooter.apply(shootAction);
         }
     }
 
-    private void stopMovement() {
-        destinationCoordinates = coordinates;
-        movementProgress = 1f;
+    @Override
+    public void updateState(float deltaTime) {
+        movable.updateState(deltaTime);
+        shooter.updateState(deltaTime);
     }
 
     @Override
-    public Movable afterApply(MoveAction moveAction) {
-        if (isMoving()) {
-            return this;
-        }
-        changeDirection(moveAction.getDirection());
-        return new Tank(moveAction.getDirection().apply(coordinates), direction, movementSpeed);
+    public Coordinates getCoordinates() {
+        return movable.getCoordinates();
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Tank tank = (Tank) o;
-        return Float.compare(movementProgress, tank.movementProgress) == 0 && Float.compare(movementSpeed, tank.movementSpeed) == 0 && Objects.equals(coordinates, tank.coordinates) && Objects.equals(destinationCoordinates, tank.destinationCoordinates) && direction == tank.direction;
+    public Coordinates getDestinationCoordinates() {
+        return movable.getDestinationCoordinates();
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(coordinates, destinationCoordinates, movementProgress, direction, movementSpeed);
+    public Direction getDirection() {
+        return movable.getDirection();
     }
 
     @Override
-    public void shoot() {
-        System.out.println("Shoot!");
+    public float getMovementProgress() {
+        return movable.getMovementProgress();
+    }
+
+    @Override
+    public boolean isMoving() {
+        return movable.isMoving();
+    }
+
+    @Override
+    public boolean didShoot() {
+        return shooter.didShoot();
     }
 }

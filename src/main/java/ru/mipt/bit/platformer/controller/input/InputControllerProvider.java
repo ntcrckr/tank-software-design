@@ -5,7 +5,6 @@ import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.controller.Controller;
 
 import static com.badlogic.gdx.Input.Keys.*;
-import static com.badlogic.gdx.Input.Keys.D;
 
 public class InputControllerProvider {
     public static Controller getKeyboardDefault() {

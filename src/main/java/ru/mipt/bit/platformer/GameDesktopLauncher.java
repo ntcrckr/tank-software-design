@@ -5,20 +5,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import ru.mipt.bit.platformer.actions.Action;
-import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
-import ru.mipt.bit.platformer.level.CollisionLevel;
 import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
-import ru.mipt.bit.platformer.level.generator.*;
+import ru.mipt.bit.platformer.level.generator.LevelGenerator;
+import ru.mipt.bit.platformer.level.generator.LevelInfo;
 import ru.mipt.bit.platformer.level.generator.impl.DefaultLevelGenerator;
 import ru.mipt.bit.platformer.level.generator.impl.RandomLevelGenerator;
 import ru.mipt.bit.platformer.level.generator.impl.SaveFileLevelGenerator;
-import ru.mipt.bit.platformer.model.*;
+import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.util.GameMode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class GameDesktopLauncher implements ApplicationListener {
 

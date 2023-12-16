@@ -3,7 +3,6 @@ package ru.mipt.bit.platformer.level.generator.impl;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
-import ru.mipt.bit.platformer.controller.Controller;
 import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
 import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
@@ -13,15 +12,20 @@ import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
 import ru.mipt.bit.platformer.model.Obstacle;
 import ru.mipt.bit.platformer.model.Tank;
+import ru.mipt.bit.platformer.model.impl.SimpleMovable;
+import ru.mipt.bit.platformer.model.impl.SimpleShooter;
 
 import java.util.List;
 
 public class DefaultLevelGenerator implements LevelGenerator {
     @Override
     public LevelInfo generate(List<LevelListener> levelListeners) {
-        Tank playerTank = new Tank(new Coordinates(1, 1), Direction.RIGHT, 0.4f);
+        Tank playerTank = new Tank(
+                new SimpleMovable(new Coordinates(1, 1), Direction.RIGHT, 0.4f),
+                new SimpleShooter(1f)
+        );
 
-        GameLevel gameLevel = new GameLevel(new Coordinates(8, 10),levelListeners, playerTank);
+        GameLevel gameLevel = new GameLevel(new Coordinates(8, 10), levelListeners, playerTank);
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
@@ -37,7 +41,10 @@ public class DefaultLevelGenerator implements LevelGenerator {
         gameGraphics.addGameObject(tree, "images/greenTree.png");
         gameGraphics.moveRectanglesAtTileCenters();
 
-        Tank enemy = new Tank(new Coordinates(4, 4), Direction.DOWN, 0.6f);
+        Tank enemy = new Tank(
+                new SimpleMovable(new Coordinates(4, 4), Direction.DOWN, 0.6f),
+                new SimpleShooter(1f)
+        );
         gameLevel.add(enemy);
         gameGraphics.addGameObject(enemy, "images/tank_red.png");
         actionGenerator.add(enemy, enemyController.getController(enemy));
