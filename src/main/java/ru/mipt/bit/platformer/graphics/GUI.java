@@ -3,6 +3,7 @@ package ru.mipt.bit.platformer.graphics;
 import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.GUIToggleAction;
 import ru.mipt.bit.platformer.model.GameEntity;
+import ru.mipt.bit.platformer.util.GameEntityType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,6 +56,11 @@ public class GUI implements GameEntity {
                 currentTimeouts.put(guiToggleAction, Math.max(currentTimeout - deltaTime, noTimeout));
             }
         }
+    }
+
+    @Override
+    public GameEntityType getGameObjectType() {
+        return GameEntityType.GUI;
     }
 
     boolean canToggle(GUIToggleAction guiToggleAction) {

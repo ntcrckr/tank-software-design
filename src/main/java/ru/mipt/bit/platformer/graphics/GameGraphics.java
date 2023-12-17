@@ -1,7 +1,6 @@
 package ru.mipt.bit.platformer.graphics;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.MapRenderer;
@@ -14,7 +13,7 @@ import ru.mipt.bit.platformer.model.GameEntity;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.Converter;
-import ru.mipt.bit.platformer.util.GameObjectType;
+import ru.mipt.bit.platformer.util.GameEntityType;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import java.util.ArrayList;
@@ -34,10 +33,10 @@ public class GameGraphics implements LevelListener {
     private MapRenderer levelRenderer;
     private TileMovement tileMovement;
     private TiledMapTileLayer groundLayer;
-    private final Map<GameObjectType, String> graphicsPathMap;
+    private final Map<GameEntityType, String> graphicsPathMap;
     private final GUI gui;
 
-    public GameGraphics(Map<GameObjectType, String> graphicsPathMap, GUI gui) {
+    public GameGraphics(Map<GameEntityType, String> graphicsPathMap, GUI gui) {
         this.graphicsPathMap = graphicsPathMap;
         this.gui = gui;
     }
@@ -45,25 +44,25 @@ public class GameGraphics implements LevelListener {
     @Override
     public void onAdd(GameEntity gameEntity) {
         if (!(gameEntity instanceof GameObject gameObject)) return;
-        GameObjectType gameObjectType = gameObject.getGameObjectType();
+        GameEntityType gameObjectType = gameObject.getGameObjectType();
         String graphicsPath = graphicsPathMap.get(gameObjectType);
         switch (gameObjectType) {
             case PLAYER_TANK, ENEMY_TANK -> {
-                HealthBar graphics = new HealthBar(new GameObjectGraphics(batch, new Texture(graphicsPath), (Movable) gameEntity));
+                HealthBar graphics = new HealthBar(new GameObjectGraphics(batch, graphicsPath, (Movable) gameEntity));
                 movableGraphics.add(graphics);
                 gui.add(HEALTH, graphics);
             }
             case BULLET -> movableGraphics.add(
-                    new GameObjectGraphics(batch, new Texture(graphicsPath), (Movable) gameEntity)
+                    new GameObjectGraphics(batch, graphicsPath, (Movable) gameEntity)
             );
-            case TREE -> otherGraphics.add(new GameObjectGraphics(batch, new Texture(graphicsPath), gameObject));
+            case TREE -> otherGraphics.add(new GameObjectGraphics(batch, graphicsPath, gameObject));
         }
     }
 
     @Override
     public void onRemove(GameEntity gameEntity) {
         if (!(gameEntity instanceof GameObject gameObject)) return;
-        GameObjectType gameObjectType = gameObject.getGameObjectType();
+        GameEntityType gameObjectType = gameObject.getGameObjectType();
         switch (gameObjectType) {
             case PLAYER_TANK, ENEMY_TANK -> {
                 Graphics graphics = movableGraphics.stream()
@@ -124,14 +123,7 @@ public class GameGraphics implements LevelListener {
         // start recording all drawing commands
         batch.begin();
 
-        Stream.concat(otherGraphics.stream(), movableGraphics.stream()).forEach(
-                gameObjectGraphics -> drawTextureRegionUnscaled(
-                        batch,
-                        gameObjectGraphics.getTextureRegion(),
-                        gameObjectGraphics.getRectangle(),
-                        gameObjectGraphics.getDrawable().getDirection().getRotation()
-                )
-        );
+        Stream.concat(otherGraphics.stream(), movableGraphics.stream()).forEach(Graphics::draw);
 
         // submit all drawing requests
         batch.end();

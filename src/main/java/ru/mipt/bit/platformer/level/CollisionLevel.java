@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CollisionLevel implements LevelListener {
-    private final List<GameObject> gameObjects = new ArrayList<>();
     private final List<Movable> movables = new ArrayList<>();
+    private final List<GameObject> otherGameObjects = new ArrayList<>();
     private final int width, height;
 
     public CollisionLevel(int width, int height) {
@@ -25,7 +25,7 @@ public class CollisionLevel implements LevelListener {
         if (gameObject instanceof Movable movable){
             movables.add(movable);
         } else {
-            gameObjects.add(gameObject);
+            otherGameObjects.add(gameObject);
         }
     }
 
@@ -34,7 +34,7 @@ public class CollisionLevel implements LevelListener {
         if (gameEntity instanceof Movable movable) {
             movables.remove(movable);
         } else {
-            gameObjects.remove(gameEntity);
+            otherGameObjects.remove(gameEntity);
         }
     }
 
@@ -45,6 +45,7 @@ public class CollisionLevel implements LevelListener {
         }
         for (Movable otherMovable : movables) {
             if (movable == otherMovable) continue;
+            if (!otherMovable.blocking()) continue;
             Coordinates otherCoordinates = otherMovable.getCoordinates();
             Coordinates otherDestinationCoordinates = otherMovable.getDestinationCoordinates();
             if (destinationCoordinates.equals(otherCoordinates) ||
@@ -52,7 +53,7 @@ public class CollisionLevel implements LevelListener {
                 return otherMovable;
             }
         }
-        for (GameObject gameObject : gameObjects) {
+        for (GameObject gameObject : otherGameObjects) {
             Coordinates otherCoordinates = gameObject.getCoordinates();
             if (destinationCoordinates.equals(otherCoordinates)) {
                 return gameObject;

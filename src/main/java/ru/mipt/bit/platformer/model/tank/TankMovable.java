@@ -5,7 +5,8 @@ import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.model.Movable;
-import ru.mipt.bit.platformer.util.GameObjectType;
+import ru.mipt.bit.platformer.model.Tank;
+import ru.mipt.bit.platformer.util.GameEntityType;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
@@ -16,10 +17,12 @@ public class TankMovable implements Movable {
     private float movementProgress;
     private Direction direction;
     private final float movementSpeed;
+    private final Tank parent;
 
-    public TankMovable(Coordinates coordinates, Direction direction, float movementSpeed) {
+    public TankMovable(Coordinates coordinates, Direction direction, float movementSpeed, Tank parent) {
         this.coordinates = coordinates;
         this.destinationCoordinates = coordinates;
+        this.parent = parent;
         this.movementProgress = 1f;
         this.direction = direction;
         this.movementSpeed = movementSpeed;
@@ -28,6 +31,11 @@ public class TankMovable implements Movable {
     @Override
     public Coordinates getCoordinates() {
         return coordinates;
+    }
+
+    @Override
+    public boolean blocking() {
+        return true;
     }
 
     @Override
@@ -41,7 +49,7 @@ public class TankMovable implements Movable {
     }
 
     @Override
-    public GameObjectType getGameObjectType() {
+    public GameEntityType getGameObjectType() {
         return null;
     }
 
@@ -68,7 +76,8 @@ public class TankMovable implements Movable {
 
     @Override
     public void updateState(float deltaTime) {
-        movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
+        float movementSpeedWithModifiers = movementSpeed / parent.getState().getMovementSpeedMultiplier();
+        movementProgress = continueProgress(movementProgress, deltaTime, movementSpeedWithModifiers);
         if (isEqual(movementProgress, 1f)) {
             coordinates = destinationCoordinates;
         }

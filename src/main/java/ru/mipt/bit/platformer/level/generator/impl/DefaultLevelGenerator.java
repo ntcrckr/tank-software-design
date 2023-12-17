@@ -2,8 +2,6 @@ package ru.mipt.bit.platformer.level.generator.impl;
 
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
-import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
-import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
@@ -13,11 +11,12 @@ import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.AssetMappings;
+import ru.mipt.bit.platformer.util.ControllerMappings;
 import ru.mipt.bit.platformer.util.GameObjectInitMap;
 
 import java.util.List;
 
-import static ru.mipt.bit.platformer.util.GameObjectType.*;
+import static ru.mipt.bit.platformer.util.GameEntityType.*;
 
 public class DefaultLevelGenerator implements LevelGenerator {
     @Override
@@ -32,24 +31,19 @@ public class DefaultLevelGenerator implements LevelGenerator {
         gameGraphics.init();
         gameLevel.addLevelListener(gameGraphics);
 
-        ActionGenerator actionGenerator = new ActionGenerator();
-
-        gameLevel.add(gui);
-        actionGenerator.add(gui, InputControllerProvider.getGUIKeyboardDefault());
-
-        AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
+        ActionGenerator actionGenerator = new ActionGenerator(new ControllerMappings(gameLevel).controllerProviderMap);
+        gameLevel.addLevelListener(actionGenerator);
 
         gameLevel.add(playerTank);
-        actionGenerator.add(playerTank, InputControllerProvider.getTankKeyboardDefault());
+        gameLevel.add(gui);
 
         GameObject tree = gameObjectInitMap.getGameObject(TREE, new Coordinates(1, 3));
         gameLevel.add(tree);
-        gameGraphics.moveRectanglesAtTileCenters();
 
         Movable enemy = (Movable) gameObjectInitMap.getGameObject(ENEMY_TANK, new Coordinates(4, 4));
         gameLevel.add(enemy);
-        actionGenerator.add(enemy, enemyController.getController(enemy));
 
+        gameGraphics.moveRectanglesAtTileCenters();
         return new LevelInfo(gameLevel, gameGraphics, actionGenerator);
     }
 }

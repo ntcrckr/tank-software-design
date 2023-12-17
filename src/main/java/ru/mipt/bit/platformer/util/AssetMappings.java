@@ -3,10 +3,10 @@ package ru.mipt.bit.platformer.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import static ru.mipt.bit.platformer.util.GameObjectType.*;
+import static ru.mipt.bit.platformer.util.GameEntityType.*;
 
 public class AssetMappings {
-    public static Map<GameObjectType, String> graphicsPathMap = new HashMap<>();
+    public static final Map<GameEntityType, String> graphicsPathMap = new HashMap<>();
 
     static {
         graphicsPathMap.put(PLAYER_TANK, "images/tank_blue.png");

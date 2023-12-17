@@ -1,41 +1,43 @@
 package ru.mipt.bit.platformer.actions;
 
 import ru.mipt.bit.platformer.controller.Controller;
+import ru.mipt.bit.platformer.controller.ControllerProvider;
+import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.model.GameEntity;
-import ru.mipt.bit.platformer.model.GameObject;
-import ru.mipt.bit.platformer.model.Movable;
+import ru.mipt.bit.platformer.util.GameEntityType;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class ActionGenerator {
-    private final Map<GameEntity, Controller> controllerTypeMap = new HashMap<>();
+public class ActionGenerator implements LevelListener {
+    private final Map<GameEntity, Controller> controllerMap = new HashMap<>();
+    private final Map<GameEntityType, ControllerProvider> controllerProviderMap;
 
-    public void add(GameEntity gameEntity, Controller controller) {
-        controllerTypeMap.put(gameEntity, controller);
+    public ActionGenerator(Map<GameEntityType, ControllerProvider> controllerProviderMap) {
+        this.controllerProviderMap = controllerProviderMap;
     }
 
     public Map<GameEntity, Action> generateActions() {
         Map<GameEntity, Action> actionMap = new HashMap<>();
-        for (Map.Entry<GameEntity, Controller> entry : controllerTypeMap.entrySet()) {
+        for (Map.Entry<GameEntity, Controller> entry : controllerMap.entrySet()) {
             Action action = entry.getValue().getAction();
             actionMap.put(entry.getKey(), action);
         }
         return actionMap;
     }
 
-    public Adapter getAdapter() {
-        return new Adapter();
+    @Override
+    public void onAdd(GameEntity gameEntity) {
+        switch (gameEntity.getGameObjectType()) {
+            case PLAYER_TANK, ENEMY_TANK, GUI -> controllerMap.put(
+                    gameEntity,
+                    controllerProviderMap.get(gameEntity.getGameObjectType()).getController(gameEntity)
+            );
+        }
     }
 
-    public class Adapter {
-        public List<Movable> getEnemies(GameObject player) {
-            return controllerTypeMap.keySet().stream()
-                    .filter(ge -> ge instanceof Movable)
-                    .map(ge -> (Movable) ge)
-                    .filter(mo -> mo != player)
-                    .toList();
-        }
+    @Override
+    public void onRemove(GameEntity gameEntity) {
+        controllerMap.remove(gameEntity);
     }
 }

@@ -7,11 +7,11 @@ import ru.mipt.bit.platformer.model.Obstacle;
 import ru.mipt.bit.platformer.model.Tank;
 import ru.mipt.bit.platformer.model.tank.TankBullet;
 
-import static ru.mipt.bit.platformer.util.GameObjectType.*;
+import static ru.mipt.bit.platformer.util.GameEntityType.*;
 
 public class DefaultGameObjectInitMap implements GameObjectInitMap {
     @Override
-    public GameObject getGameObject(GameObjectType gameObjectType, Coordinates coordinates) {
+    public GameObject getGameObject(GameEntityType gameObjectType, Coordinates coordinates) {
         return switch (gameObjectType) {
             case PLAYER_TANK -> new Tank(
                     coordinates,
@@ -37,6 +37,7 @@ public class DefaultGameObjectInitMap implements GameObjectInitMap {
             );
             case TREE -> new Obstacle(coordinates, TREE);
             case BULLET -> throw new RuntimeException();
+            case GUI -> null;
         };
     }
 }

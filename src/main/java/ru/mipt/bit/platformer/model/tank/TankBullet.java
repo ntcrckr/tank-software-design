@@ -6,10 +6,10 @@ import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.model.Bullet;
-import ru.mipt.bit.platformer.util.GameObjectType;
+import ru.mipt.bit.platformer.util.GameEntityType;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
-import static ru.mipt.bit.platformer.util.GameObjectType.BULLET;
+import static ru.mipt.bit.platformer.util.GameEntityType.BULLET;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class TankBullet implements Bullet {
@@ -52,6 +52,11 @@ public class TankBullet implements Bullet {
     }
 
     @Override
+    public boolean blocking() {
+        return false;
+    }
+
+    @Override
     public Coordinates getDestinationCoordinates() {
         return destinationCoordinates;
     }
@@ -62,7 +67,7 @@ public class TankBullet implements Bullet {
     }
 
     @Override
-    public GameObjectType getGameObjectType() {
+    public GameEntityType getGameObjectType() {
         return BULLET;
     }
 

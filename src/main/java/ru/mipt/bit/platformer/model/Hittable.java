@@ -4,4 +4,6 @@ public interface Hittable {
     float getHealth();
 
     void takeDamage(float damage);
+
+    float getMaxHealth();
 }
