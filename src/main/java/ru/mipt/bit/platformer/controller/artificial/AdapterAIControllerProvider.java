@@ -9,25 +9,27 @@ import org.awesome.ai.state.movable.Orientation;
 import org.awesome.ai.state.movable.Player;
 import org.awesome.ai.strategy.NotRecommendingAI;
 import ru.mipt.bit.platformer.actions.Action;
-import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.actions.MoveAction;
 import ru.mipt.bit.platformer.actions.ShootAction;
 import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.controller.Controller;
+import ru.mipt.bit.platformer.controller.ControllerProvider;
 import ru.mipt.bit.platformer.level.GameLevel;
+import ru.mipt.bit.platformer.model.GameEntity;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 
 import java.util.List;
 
-public class AIControllerAdapter {
+import static ru.mipt.bit.platformer.util.GameEntityType.ENEMY_TANK;
+import static ru.mipt.bit.platformer.util.GameEntityType.TREE;
+
+public class AdapterAIControllerProvider implements ControllerProvider {
     private final AI ai = new NotRecommendingAI();
     private final GameLevel gameLevel;
-    private final ActionGenerator actionGenerator;
 
-    public AIControllerAdapter(GameLevel gameLevel, ActionGenerator actionGenerator) {
+    public AdapterAIControllerProvider(GameLevel gameLevel) {
         this.gameLevel = gameLevel;
-        this.actionGenerator = actionGenerator;
     }
 
     public GameState getGameState() {
@@ -56,10 +58,9 @@ public class AIControllerAdapter {
     }
 
     private List<Obstacle> getObstacles() {
-        List<Movable> enemies = actionGenerator.getAdapter().getEnemies(gameLevel.getPlayer());
-        List<GameObject> obstacles = gameLevel.getAdapter().getGameObjects().stream()
-                .filter(go -> go != gameLevel.getPlayer())
-                .filter(enemies::contains)
+        List<GameObject> obstacles = gameLevel.getAdapter().getGameEntities().stream()
+                .filter(go -> go.getGameObjectType() == TREE)
+                .map(ge -> (GameObject) ge)
                 .toList();
         return obstacles.stream()
                 .map(go -> new Obstacle(go.getCoordinates().getX(), go.getCoordinates().getY()))
@@ -67,8 +68,9 @@ public class AIControllerAdapter {
     }
 
     private List<Bot> getBots() {
-        List<Movable> enemies = actionGenerator.getAdapter().getEnemies(gameLevel.getPlayer());
-        return enemies.stream()
+        return gameLevel.getAdapter().getGameEntities().stream()
+                .filter(ge -> ge.getGameObjectType() == ENEMY_TANK)
+                .map(ge -> (Movable) ge)
                 .map(go -> new Bot.BotBuilder()
                         .source(go)
                         .x(go.getCoordinates().getX())
@@ -90,22 +92,23 @@ public class AIControllerAdapter {
         };
     }
 
-    public Controller getController(GameObject gameObject) {
-        return new AIController(gameObject);
+    @Override
+    public Controller getController(GameEntity gameEntity) {
+        return new AIController(gameEntity);
     }
 
     class AIController implements Controller {
-        private final GameObject gameObject;
+        private final GameEntity gameEntity;
 
-        AIController(GameObject gameObject) {
-            this.gameObject = gameObject;
+        AIController(GameEntity gameEntity) {
+            this.gameEntity = gameEntity;
         }
 
         @Override
         public Action getAction() {
             List<Recommendation> recommendations = ai.recommend(getGameState());
             return recommendations.stream()
-                    .filter(r -> r.getActor().getSource() == gameObject)
+                    .filter(r -> r.getActor().getSource() == gameEntity)
                     .findFirst()
                     .map(r -> switch (r.getAction()) {
                         case Shoot -> new ShootAction();

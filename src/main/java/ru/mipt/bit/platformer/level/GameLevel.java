@@ -89,8 +89,8 @@ public class GameLevel {
     }
 
     public class Adapter {
-        public List<GameObject> getGameObjects() {
-            return gameEntities.stream().filter(ge -> ge instanceof GameObject).map(ge -> (GameObject) ge).toList();
+        public List<GameEntity> getGameEntities() {
+            return gameEntities;
         }
     }
 }

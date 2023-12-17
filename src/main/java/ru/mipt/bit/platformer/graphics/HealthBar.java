@@ -21,16 +21,16 @@ public class HealthBar implements Graphics, ToggleableGraphics {
         this.gameObjectGraphics = gameObjectGraphics;
     }
 
-    private void drawHealthBar(Batch batch, Rectangle rectangle, float health) {
-        TextureRegion healthBgBar = createRedBar(100, RED);
-        TextureRegion healthLeftBar = createRedBar(health, GREEN);
+    private void drawHealthBar(Batch batch, Rectangle rectangle, float health, float maxHealth) {
+        TextureRegion healthBgBar = createBar(maxHealth, RED);
+        TextureRegion healthLeftBar = createBar(health, GREEN);
         Rectangle hpRectangle = new Rectangle(rectangle);
         hpRectangle.y += 90;
         GdxGameUtils.drawTextureRegionUnscaled(batch, healthBgBar, hpRectangle, 0);
         GdxGameUtils.drawTextureRegionUnscaled(batch, healthLeftBar, hpRectangle, 0);
     }
 
-    private static TextureRegion createRedBar(float health, Color color) {
+    private static TextureRegion createBar(float health, Color color) {
         int width = Math.round(90 * health / 100);
         Pixmap pixmap = new Pixmap(width, 20, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
@@ -41,6 +41,19 @@ public class HealthBar implements Graphics, ToggleableGraphics {
     }
 
     @Override
+    public void draw() {
+        if (visible) {
+            drawHealthBar(
+                    gameObjectGraphics.getBatch(),
+                    gameObjectGraphics.getRectangle(),
+                    ((Hittable) gameObjectGraphics.getDrawable()).getHealth(),
+                    ((Hittable) gameObjectGraphics.getDrawable()).getMaxHealth()
+            );
+        }
+        gameObjectGraphics.draw();
+    }
+
+    @Override
     public Batch getBatch() {
         return gameObjectGraphics.getBatch();
     }
@@ -48,18 +61,6 @@ public class HealthBar implements Graphics, ToggleableGraphics {
     @Override
     public Texture getTexture() {
         return gameObjectGraphics.getTexture();
-    }
-
-    @Override
-    public TextureRegion getTextureRegion() {
-        if (visible) {
-            drawHealthBar(
-                    gameObjectGraphics.getBatch(),
-                    gameObjectGraphics.getRectangle(),
-                    ((Hittable) gameObjectGraphics.getDrawable()).getHealth()
-            );
-        }
-        return gameObjectGraphics.getTextureRegion();
     }
 
     @Override

@@ -2,23 +2,22 @@ package ru.mipt.bit.platformer.level.generator.impl;
 
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
-import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
-import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
+import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
-import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.AssetMappings;
+import ru.mipt.bit.platformer.util.ControllerMappings;
 import ru.mipt.bit.platformer.util.GameObjectInitMap;
 import ru.mipt.bit.platformer.util.RandomCoordinatesGenerator;
 
 import java.util.List;
 
-import static ru.mipt.bit.platformer.util.GameObjectType.*;
+import static ru.mipt.bit.platformer.util.GameEntityType.*;
 
 
 public class RandomLevelGenerator implements LevelGenerator {
@@ -43,20 +42,17 @@ public class RandomLevelGenerator implements LevelGenerator {
 
         GameLevel gameLevel = new GameLevel(new Coordinates(width, height), levelListeners, playerTank);
 
-        ActionGenerator actionGenerator = new ActionGenerator();
-
         GUI gui = new GUI();
         gameLevel.add(gui);
-        actionGenerator.add(gui, InputControllerProvider.getGUIKeyboardDefault());
-
-        AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
 
         GameGraphics gameGraphics = new GameGraphics(AssetMappings.graphicsPathMap, gui);
         gameGraphics.init();
         gameLevel.addLevelListener(gameGraphics);
 
+        ActionGenerator actionGenerator = new ActionGenerator(new ControllerMappings(gameLevel).controllerProviderMap);
+        gameLevel.addLevelListener(actionGenerator);
+
         gameLevel.add(playerTank);
-        actionGenerator.add(playerTank, InputControllerProvider.getTankKeyboardDefault());
 
         for (int i = 0; i < treesAmount; i++) {
             GameObject tree = gameObjectInitMap.getGameObject(TREE, coordinatesGenerator.getCoordinates());
@@ -66,7 +62,6 @@ public class RandomLevelGenerator implements LevelGenerator {
         for (int i = 0; i < enemiesAmount; i++) {
             Movable tank = (Movable) gameObjectInitMap.getGameObject(ENEMY_TANK, coordinatesGenerator.getCoordinates());
             gameLevel.add(tank);
-            actionGenerator.add(tank, enemyController.getController(tank));
         }
 
         gameGraphics.moveRectanglesAtTileCenters();

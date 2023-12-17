@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.model;
 import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
-import ru.mipt.bit.platformer.util.GameObjectType;
+import ru.mipt.bit.platformer.util.GameEntityType;
 
 public class GameLevelBoundary implements GameObject {
     @Override
@@ -26,7 +26,7 @@ public class GameLevelBoundary implements GameObject {
     }
 
     @Override
-    public GameObjectType getGameObjectType() {
+    public GameEntityType getGameObjectType() {
         return null;
     }
 }

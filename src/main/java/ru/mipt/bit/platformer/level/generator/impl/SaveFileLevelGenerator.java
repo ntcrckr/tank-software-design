@@ -2,17 +2,16 @@ package ru.mipt.bit.platformer.level.generator.impl;
 
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
-import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
-import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
+import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
-import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.AssetMappings;
+import ru.mipt.bit.platformer.util.ControllerMappings;
 import ru.mipt.bit.platformer.util.GameObjectInitMap;
 
 import java.io.File;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
 
-import static ru.mipt.bit.platformer.util.GameObjectType.*;
+import static ru.mipt.bit.platformer.util.GameEntityType.*;
 
 
 public class SaveFileLevelGenerator implements LevelGenerator {
@@ -75,15 +74,11 @@ public class SaveFileLevelGenerator implements LevelGenerator {
         gameGraphics.init();
         gameLevel.addLevelListener(gameGraphics);
 
-        ActionGenerator actionGenerator = new ActionGenerator();
+        ActionGenerator actionGenerator = new ActionGenerator(new ControllerMappings(gameLevel).controllerProviderMap);
+        gameLevel.addLevelListener(actionGenerator);
 
         gameLevel.add(gui);
-        actionGenerator.add(gui, InputControllerProvider.getGUIKeyboardDefault());
-
         gameLevel.add(player);
-        actionGenerator.add(player, InputControllerProvider.getTankKeyboardDefault());
-
-        AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
 
         try {
             scanner = new Scanner(this.saveFile);
@@ -103,17 +98,15 @@ public class SaveFileLevelGenerator implements LevelGenerator {
             for (int x = 0; x < line.length(); x++) {
                 char c = line.charAt(x);
                 switch (c) {
-                    case '_' -> {
+                    case '_', 'X' -> {
                     }
                     case 'T' -> {
                         GameObject tree = gameObjectInitMap.getGameObject(TREE, new Coordinates(x, y));
                         gameLevel.add(tree);
                     }
-                    case 'X' -> {}
                     case 'E' -> {
                         Movable enemy = (Movable) gameObjectInitMap.getGameObject(ENEMY_TANK, new Coordinates(x, y));
                         gameLevel.add(enemy);
-                        actionGenerator.add(enemy, enemyController.getController(enemy));
                     }
                 }
             }

@@ -1,8 +1,9 @@
 package ru.mipt.bit.platformer.util;
 
-public enum GameObjectType {
+public enum GameEntityType {
     PLAYER_TANK,
     ENEMY_TANK,
     TREE,
-    BULLET
+    BULLET,
+    GUI
 }
