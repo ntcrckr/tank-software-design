@@ -5,12 +5,11 @@ import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
 
 public class LevelInfo {
-
     private final GameLevel gameLevel;
     private final GameGraphics gameGraphics;
     private final ActionGenerator actionGenerator;
 
-    LevelInfo(GameLevel gameLevel, GameGraphics gameGraphics, ActionGenerator actionGenerator) {
+    public LevelInfo(GameLevel gameLevel, GameGraphics gameGraphics, ActionGenerator actionGenerator) {
         this.gameLevel = gameLevel;
         this.gameGraphics = gameGraphics;
         this.actionGenerator = actionGenerator;
