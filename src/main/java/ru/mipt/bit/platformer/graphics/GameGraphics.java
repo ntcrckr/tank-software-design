@@ -80,7 +80,7 @@ public class GameGraphics {
                     batch,
                     gameObjectGraphics.getTextureRegion(),
                     gameObjectGraphics.getRectangle(),
-                    gameObjectGraphics.getDrawable().getRotation()
+                    gameObjectGraphics.getDrawable().getDirection().getRotation()
             )
         );
 

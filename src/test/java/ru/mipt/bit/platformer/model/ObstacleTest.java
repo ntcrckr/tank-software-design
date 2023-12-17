@@ -11,7 +11,7 @@ class ObstacleTest {
     @Test
     void testObstacleRotationOnCreation() {
         Obstacle obstacle = new Obstacle(new Coordinates(0, 0));
-        float obstacleRotation = obstacle.getRotation();
+        float obstacleRotation = obstacle.getDirection();
         float obstacleExpectedRotation = Direction.RIGHT.getRotation();
         assertEquals(obstacleRotation, obstacleExpectedRotation);
     }

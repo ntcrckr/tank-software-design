@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.model;
 
 import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.basics.Direction;
 
 public interface GameObject {
 
@@ -9,7 +10,7 @@ public interface GameObject {
 
     Coordinates getDestinationCoordinates();
 
-    float getRotation();
+    Direction getDirection();
 
     void updateState(float deltaTime);
 

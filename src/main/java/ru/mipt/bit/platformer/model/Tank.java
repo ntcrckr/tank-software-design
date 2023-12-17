@@ -59,8 +59,9 @@ public class Tank implements GameObject, Movable {
         }
     }
 
-    public float getRotation() {
-        return direction.getRotation();
+    @Override
+    public Direction getDirection() {
+        return direction;
     }
 
     @Override

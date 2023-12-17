@@ -3,13 +3,14 @@ package ru.mipt.bit.platformer.level.generator.impl;
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
 import ru.mipt.bit.platformer.basics.Direction;
-import ru.mipt.bit.platformer.controller.artificial.AIController;
+import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
 import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
 import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
+import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Obstacle;
 import ru.mipt.bit.platformer.model.Tank;
 
@@ -28,7 +29,6 @@ public class SaveFileLevelGenerator implements LevelGenerator {
         this.saveFile = new File(saveFileName);
     }
 
-    @Override
     public LevelInfo generate(List<LevelListener> levelListeners) {
         Coordinates levelSize = getLevelWidthHeight();
         System.out.println(levelSize);
@@ -55,8 +55,31 @@ public class SaveFileLevelGenerator implements LevelGenerator {
         }
     }
 
+    private GameObject getPlayer() {
+        try(
+                Scanner scanner = new Scanner(this.saveFile);
+                Stream<String> fileStream = Files.lines(saveFile.toPath())
+        ) {
+            int y = (int) fileStream.count() - 1;
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                for (int x = 0; x < line.length(); x++) {
+                    char notation = line.charAt(x);
+                    if (notation == 'X') {
+                        return new Tank(new Coordinates(x, y), Direction.RIGHT, 0.4f);
+                    }
+                }
+                y--;
+            }
+            return null;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private LevelInfo getLevelInfo(List<LevelListener> levelListeners, Coordinates levelSize) {
-        GameLevel gameLevel = new GameLevel(levelSize, levelListeners);
+        GameLevel gameLevel = new GameLevel(levelSize, levelListeners, getPlayer());
         GameGraphics gameGraphics = new GameGraphics();
         gameGraphics.init();
         ActionGenerator actionGenerator = new ActionGenerator();
@@ -79,6 +102,7 @@ public class SaveFileLevelGenerator implements LevelGenerator {
     }
 
     private static void handleNotation(char c, Coordinates coordinates, GameLevel gameLevel, GameGraphics gameGraphics, ActionGenerator actionGenerator) {
+        AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
         switch (c) {
             case '_' -> {
             }
@@ -97,7 +121,7 @@ public class SaveFileLevelGenerator implements LevelGenerator {
                 Tank enemy = new Tank(coordinates, Direction.DOWN, 0.6f);
                 gameLevel.add(enemy);
                 gameGraphics.addGameObject(enemy, "images/tank_red.png");
-                actionGenerator.add(enemy, new AIController());
+                actionGenerator.add(enemy, enemyController.getController(enemy));
             }
         }
     }
