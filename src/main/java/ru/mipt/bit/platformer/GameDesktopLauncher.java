@@ -14,7 +14,7 @@ import ru.mipt.bit.platformer.level.generator.LevelInfo;
 import ru.mipt.bit.platformer.level.generator.impl.DefaultLevelGenerator;
 import ru.mipt.bit.platformer.level.generator.impl.RandomLevelGenerator;
 import ru.mipt.bit.platformer.level.generator.impl.SaveFileLevelGenerator;
-import ru.mipt.bit.platformer.model.GameObject;
+import ru.mipt.bit.platformer.model.GameEntity;
 import ru.mipt.bit.platformer.util.DefaultGameObjectInitMap;
 import ru.mipt.bit.platformer.util.GameMode;
 
@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 public class GameDesktopLauncher implements ApplicationListener {
-
     private ActionGenerator actionGenerator;
     private GameLevel gameLevel;
     private GameGraphics gameGraphics;
@@ -48,7 +47,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        Map<GameObject, Action> actionMap = actionGenerator.generateActions();
+        Map<GameEntity, Action> actionMap = actionGenerator.generateActions();
 
         gameLevel.applyActions(actionMap);
 

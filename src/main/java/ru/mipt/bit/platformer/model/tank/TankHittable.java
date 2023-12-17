@@ -17,6 +17,5 @@ public class TankHittable implements Hittable {
     @Override
     public void takeDamage(float damage) {
         health = Math.max(health - damage, 0);
-        System.out.println(health);
     }
 }

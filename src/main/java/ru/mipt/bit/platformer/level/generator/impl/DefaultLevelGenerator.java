@@ -9,6 +9,7 @@ import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
+import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.AssetMappings;
@@ -25,16 +26,21 @@ public class DefaultLevelGenerator implements LevelGenerator {
 
         GameLevel gameLevel = new GameLevel(new Coordinates(8, 10), levelListeners, playerTank);
 
-        GameGraphics gameGraphics = new GameGraphics(AssetMappings.graphicsPathMap);
+        GUI gui = new GUI();
+
+        GameGraphics gameGraphics = new GameGraphics(AssetMappings.graphicsPathMap, gui);
         gameGraphics.init();
         gameLevel.addLevelListener(gameGraphics);
 
         ActionGenerator actionGenerator = new ActionGenerator();
 
+        gameLevel.add(gui);
+        actionGenerator.add(gui, InputControllerProvider.getGUIKeyboardDefault());
+
         AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
 
         gameLevel.add(playerTank);
-        actionGenerator.add(playerTank, InputControllerProvider.getKeyboardDefault());
+        actionGenerator.add(playerTank, InputControllerProvider.getTankKeyboardDefault());
 
         GameObject tree = gameObjectInitMap.getGameObject(TREE, new Coordinates(1, 3));
         gameLevel.add(tree);

@@ -9,6 +9,7 @@ import ru.mipt.bit.platformer.level.GameLevel;
 import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
+import ru.mipt.bit.platformer.graphics.GUI;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 import ru.mipt.bit.platformer.util.AssetMappings;
@@ -68,14 +69,19 @@ public class SaveFileLevelGenerator implements LevelGenerator {
 
         GameLevel gameLevel = new GameLevel(new Coordinates(width, height), levelListeners, player);
 
-        GameGraphics gameGraphics = new GameGraphics(AssetMappings.graphicsPathMap);
+        GUI gui = new GUI();
+
+        GameGraphics gameGraphics = new GameGraphics(AssetMappings.graphicsPathMap, gui);
         gameGraphics.init();
         gameLevel.addLevelListener(gameGraphics);
 
         ActionGenerator actionGenerator = new ActionGenerator();
 
+        gameLevel.add(gui);
+        actionGenerator.add(gui, InputControllerProvider.getGUIKeyboardDefault());
+
         gameLevel.add(player);
-        actionGenerator.add(player, InputControllerProvider.getKeyboardDefault());
+        actionGenerator.add(player, InputControllerProvider.getTankKeyboardDefault());
 
         AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
 

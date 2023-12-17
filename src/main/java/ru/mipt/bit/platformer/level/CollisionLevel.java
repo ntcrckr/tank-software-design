@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.level;
 
 import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.model.GameEntity;
 import ru.mipt.bit.platformer.model.GameLevelBoundary;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
@@ -19,7 +20,8 @@ public class CollisionLevel implements LevelListener {
     }
 
     @Override
-    public void onAdd(GameObject gameObject) {
+    public void onAdd(GameEntity gameEntity) {
+        if (!(gameEntity instanceof GameObject gameObject)) return;
         if (gameObject instanceof Movable movable){
             movables.add(movable);
         } else {
@@ -28,11 +30,11 @@ public class CollisionLevel implements LevelListener {
     }
 
     @Override
-    public void onRemove(GameObject gameObject) {
-        if (gameObject instanceof Movable movable) {
+    public void onRemove(GameEntity gameEntity) {
+        if (gameEntity instanceof Movable movable) {
             movables.remove(movable);
         } else {
-            gameObjects.remove(gameObject);
+            gameObjects.remove(gameEntity);
         }
     }
 
