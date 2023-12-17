@@ -2,7 +2,6 @@ package ru.mipt.bit.platformer.level.generator.impl;
 
 import ru.mipt.bit.platformer.actions.ActionGenerator;
 import ru.mipt.bit.platformer.basics.Coordinates;
-import ru.mipt.bit.platformer.basics.Direction;
 import ru.mipt.bit.platformer.controller.artificial.AIControllerAdapter;
 import ru.mipt.bit.platformer.controller.input.InputControllerProvider;
 import ru.mipt.bit.platformer.graphics.GameGraphics;
@@ -11,10 +10,9 @@ import ru.mipt.bit.platformer.level.LevelListener;
 import ru.mipt.bit.platformer.level.generator.LevelGenerator;
 import ru.mipt.bit.platformer.level.generator.LevelInfo;
 import ru.mipt.bit.platformer.model.GameObject;
-import ru.mipt.bit.platformer.model.Obstacle;
-import ru.mipt.bit.platformer.model.Tank;
-import ru.mipt.bit.platformer.model.impl.SimpleMovable;
-import ru.mipt.bit.platformer.model.impl.SimpleShooter;
+import ru.mipt.bit.platformer.model.Movable;
+import ru.mipt.bit.platformer.util.AssetMappings;
+import ru.mipt.bit.platformer.util.GameObjectInitMap;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,6 +21,8 @@ import java.nio.file.Files;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Stream;
+
+import static ru.mipt.bit.platformer.util.GameObjectType.*;
 
 
 public class SaveFileLevelGenerator implements LevelGenerator {
@@ -33,7 +33,7 @@ public class SaveFileLevelGenerator implements LevelGenerator {
     }
 
     @Override
-    public LevelInfo generate(List<LevelListener> levelListeners) {
+    public LevelInfo generate(GameObjectInitMap gameObjectInitMap, List<LevelListener> levelListeners) {
         Scanner scanner;
         try {
             scanner = new Scanner(this.saveFile);
@@ -51,17 +51,14 @@ public class SaveFileLevelGenerator implements LevelGenerator {
         int width = 0;
         int y = height;
 
-        GameObject player = null;
+        Movable player = null;
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
             for (int x = 0; x < line.length(); x++) {
                 char c = line.charAt(x);
                 if (c == 'X') {
-                    player = new Tank(
-                            new SimpleMovable(new Coordinates(x, y), Direction.RIGHT, 0.4f),
-                            new SimpleShooter(1f)
-                    );
+                    player = (Movable) gameObjectInitMap.getGameObject(PLAYER_TANK, new Coordinates(x, y));
                 }
                 width = Math.max(width, x);
             }
@@ -71,9 +68,14 @@ public class SaveFileLevelGenerator implements LevelGenerator {
 
         GameLevel gameLevel = new GameLevel(new Coordinates(width, height), levelListeners, player);
 
-        GameGraphics gameGraphics = new GameGraphics();
+        GameGraphics gameGraphics = new GameGraphics(AssetMappings.graphicsPathMap);
         gameGraphics.init();
+        gameLevel.addLevelListener(gameGraphics);
+
         ActionGenerator actionGenerator = new ActionGenerator();
+
+        gameLevel.add(player);
+        actionGenerator.add(player, InputControllerProvider.getKeyboardDefault());
 
         AIControllerAdapter enemyController = new AIControllerAdapter(gameLevel, actionGenerator);
 
@@ -98,26 +100,13 @@ public class SaveFileLevelGenerator implements LevelGenerator {
                     case '_' -> {
                     }
                     case 'T' -> {
-                        Obstacle tree = new Obstacle(new Coordinates(x, y));
+                        GameObject tree = gameObjectInitMap.getGameObject(TREE, new Coordinates(x, y));
                         gameLevel.add(tree);
-                        gameGraphics.addGameObject(tree, "images/greenTree.png");
                     }
-                    case 'X' -> {
-                        Tank player_ = new Tank(
-                                new SimpleMovable(new Coordinates(x, y), Direction.RIGHT, 0.4f),
-                                new SimpleShooter(1f)
-                        );
-                        gameLevel.add(player_);
-                        gameGraphics.addGameObject(player_, "images/tank_blue.png");
-                        actionGenerator.add(player_, InputControllerProvider.getKeyboardDefault());
-                    }
+                    case 'X' -> {}
                     case 'E' -> {
-                        Tank enemy = new Tank(
-                                new SimpleMovable(new Coordinates(x, y), Direction.DOWN, 0.6f),
-                                new SimpleShooter(1f)
-                        );
+                        Movable enemy = (Movable) gameObjectInitMap.getGameObject(ENEMY_TANK, new Coordinates(x, y));
                         gameLevel.add(enemy);
-                        gameGraphics.addGameObject(enemy, "images/tank_red.png");
                         actionGenerator.add(enemy, enemyController.getController(enemy));
                     }
                 }

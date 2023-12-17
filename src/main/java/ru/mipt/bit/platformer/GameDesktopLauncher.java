@@ -15,6 +15,7 @@ import ru.mipt.bit.platformer.level.generator.impl.DefaultLevelGenerator;
 import ru.mipt.bit.platformer.level.generator.impl.RandomLevelGenerator;
 import ru.mipt.bit.platformer.level.generator.impl.SaveFileLevelGenerator;
 import ru.mipt.bit.platformer.model.GameObject;
+import ru.mipt.bit.platformer.util.DefaultGameObjectInitMap;
 import ru.mipt.bit.platformer.util.GameMode;
 
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ public class GameDesktopLauncher implements ApplicationListener {
             case FROM_FILE -> new SaveFileLevelGenerator("src/main/resources/level.txt");
         };
         List<LevelListener> levelListeners = new ArrayList<>();
-        LevelInfo levelInfo = levelGenerator.generate(levelListeners);
+        LevelInfo levelInfo = levelGenerator.generate(new DefaultGameObjectInitMap(), levelListeners);
         gameLevel = levelInfo.getGameLevel();
         gameGraphics = levelInfo.getGameGraphics();
         actionGenerator = levelInfo.getActionGenerator();

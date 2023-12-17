@@ -1,6 +1,7 @@
 package ru.mipt.bit.platformer.level;
 
 import ru.mipt.bit.platformer.basics.Coordinates;
+import ru.mipt.bit.platformer.model.GameLevelBoundary;
 import ru.mipt.bit.platformer.model.GameObject;
 import ru.mipt.bit.platformer.model.Movable;
 
@@ -35,10 +36,10 @@ public class CollisionLevel implements LevelListener {
         }
     }
 
-    public boolean isGoingToCollide(Movable movable) {
+    public GameObject isGoingToCollide(Movable movable) {
         Coordinates destinationCoordinates = movable.getDestinationCoordinates();
         if (!isWithinLevelBounds(destinationCoordinates)) {
-            return true;
+            return new GameLevelBoundary();
         }
         for (Movable otherMovable : movables) {
             if (movable == otherMovable) continue;
@@ -46,16 +47,16 @@ public class CollisionLevel implements LevelListener {
             Coordinates otherDestinationCoordinates = otherMovable.getDestinationCoordinates();
             if (destinationCoordinates.equals(otherCoordinates) ||
                     destinationCoordinates.equals(otherDestinationCoordinates)) {
-                return true;
+                return otherMovable;
             }
         }
         for (GameObject gameObject : gameObjects) {
             Coordinates otherCoordinates = gameObject.getCoordinates();
             if (destinationCoordinates.equals(otherCoordinates)) {
-                return true;
+                return gameObject;
             }
         }
-        return false;
+        return null;
     }
 
     private boolean isWithinLevelBounds(Coordinates coordinates) {

@@ -32,14 +32,26 @@ public class AIControllerAdapter {
 
     public GameState getGameState() {
         List<Obstacle> obstacles = getObstacles();
-        List<Bot> bots = getBots(); // TODO: move this fix to prev commit
-        Player player = null;  // TODO: add player
+        List<Bot> bots = getBots();
+        Player player = getPlayer();
         return new GameState.GameStateBuilder()
                 .obstacles(obstacles)
                 .bots(bots)
                 .player(player)
                 .levelWidth(gameLevel.getSize().getX())
                 .levelHeight(gameLevel.getSize().getY())
+                .build();
+    }
+
+    private Player getPlayer() {
+        Movable player = gameLevel.getPlayer();
+        return new Player.PlayerBuilder()
+                .source(player)
+                .x(player.getCoordinates().getX())
+                .y(player.getCoordinates().getY())
+                .destX(player.getDestinationCoordinates().getX())
+                .destY(player.getDestinationCoordinates().getY())
+                .orientation(getOrientation(player.getDirection()))
                 .build();
     }
 
