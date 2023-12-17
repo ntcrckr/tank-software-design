@@ -4,10 +4,7 @@ import ru.mipt.bit.platformer.actions.Action;
 import ru.mipt.bit.platformer.actions.BulletHitAction;
 import ru.mipt.bit.platformer.actions.CreateAction;
 import ru.mipt.bit.platformer.basics.Coordinates;
-import ru.mipt.bit.platformer.model.Bullet;
-import ru.mipt.bit.platformer.model.GameObject;
-import ru.mipt.bit.platformer.model.Hittable;
-import ru.mipt.bit.platformer.model.Movable;
+import ru.mipt.bit.platformer.model.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +13,7 @@ import java.util.Map;
 import static ru.mipt.bit.platformer.actions.MoveAction.STOP;
 
 public class GameLevel {
-    private final List<GameObject> gameObjects = new ArrayList<>();
+    private final List<GameEntity> gameEntities = new ArrayList<>();
     private final CollisionLevel collisionLevel;
     private final List<LevelListener> levelListeners;
     private final Coordinates size;
@@ -34,19 +31,19 @@ public class GameLevel {
         levelListeners.add(levelListener);
     }
 
-    public void add(GameObject gameObject) {
-        levelListeners.forEach(ll -> ll.onAdd(gameObject));
-        gameObjects.add(gameObject);
+    public void add(GameEntity gameEntity) {
+        levelListeners.forEach(ll -> ll.onAdd(gameEntity));
+        gameEntities.add(gameEntity);
     }
 
     public void remove(GameObject gameObject) {
         levelListeners.forEach(ll -> ll.onRemove(gameObject));
-        gameObjects.remove(gameObject);
+        gameEntities.remove(gameObject);
     }
 
-    public void applyActions(Map<GameObject, Action> actionMap) {
-        for (Map.Entry<GameObject, Action> entry : actionMap.entrySet()) {
-            GameObject gameObject = entry.getKey();
+    public void applyActions(Map<GameEntity, Action> actionMap) {
+        for (Map.Entry<GameEntity, Action> entry : actionMap.entrySet()) {
+            GameEntity gameObject = entry.getKey();
             Action action = entry.getValue();
 
             Action responseAction = gameObject.apply(action);
@@ -59,11 +56,11 @@ public class GameLevel {
     public void updateState(float deltaTime) {
         List<GameObject> gameObjectsToRemove = new ArrayList<>();
 
-        for (GameObject gameObject : gameObjects) {
-            if (gameObject instanceof Movable movable) {
+        for (GameEntity gameEntity : gameEntities) {
+            if (gameEntity instanceof Movable movable) {
                 GameObject collidedGameObject = collisionLevel.isGoingToCollide(movable);
                 if (collidedGameObject != null) {
-                    Action responseAction = gameObject.apply(STOP);
+                    Action responseAction = gameEntity.apply(STOP);
                     if (responseAction instanceof BulletHitAction) {
                         Bullet bullet = (Bullet) movable;
                         gameObjectsToRemove.add(bullet);
@@ -73,7 +70,7 @@ public class GameLevel {
                     }
                 }
             }
-            gameObject.updateState(deltaTime);
+            gameEntity.updateState(deltaTime);
         }
 
         gameObjectsToRemove.forEach(this::remove);
@@ -93,7 +90,7 @@ public class GameLevel {
 
     public class Adapter {
         public List<GameObject> getGameObjects() {
-            return gameObjects;
+            return gameEntities.stream().filter(ge -> ge instanceof GameObject).map(ge -> (GameObject) ge).toList();
         }
     }
 }
